@@ -14,23 +14,29 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { environment } from '../environments/environment';
-import { HomepageComponent } from './pages/homepage/homepage.component';
+import { InicioComponent } from './pages/inicio/inicio.component';
 import { LoginComponent } from './pages/login/login.component';
 import { PerfilComponent } from './pages/perfil/perfil.component';
-import { RegistropageComponent } from './pages/registropage/registropage.component';
+import { RegistroComponent } from './pages/registro/registro.component';
 import { EmailLoginComponent } from './pages/email-login/email-login.component';
 
 import { AuthService } from './services/auth.service';
+import { PainelComponent } from './pages/painel/painel.component';
+import { EsqueceuSenhaComponent } from './pages/esqueceu-senha/esqueceu-senha.component';
+import { VerificarEmailComponent } from './pages/verificar-email/verificar-email.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomepageComponent,
+    InicioComponent,
     LoginComponent,
-    RegistropageComponent,
+    RegistroComponent,
     PerfilComponent,
-    EmailLoginComponent
+    EmailLoginComponent,
+    PainelComponent,
+    EsqueceuSenhaComponent,
+    VerificarEmailComponent
   ],
   imports: [
     BrowserModule,
