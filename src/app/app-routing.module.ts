@@ -1,13 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomepageComponent } from './homepage/homepage.component';
-import { LoginpageComponent } from './loginpage/loginpage.component';
-import { RegistropageComponent } from './registropage/registropage.component';
+import { EmailLoginComponent } from './pages/email-login/email-login.component';
+import { HomepageComponent } from './pages/homepage/homepage.component';
+import { LoginComponent } from './pages/login/login.component';
+import { PerfilComponent } from './pages/perfil/perfil.component';
+import { RegistropageComponent } from './pages/registropage/registropage.component';
 
 const routes: Routes = [
-  { path: '', component: HomepageComponent },
-  { path: 'login', component: LoginpageComponent },
+  { path: '', component: LoginComponent },
+  { path: 'login', component: LoginComponent },
   { path: 'registro', component: RegistropageComponent },
+  { path: 'perfil', component: PerfilComponent},
+  { path: 'email-login', component: EmailLoginComponent}
 ];
 
 @NgModule({
