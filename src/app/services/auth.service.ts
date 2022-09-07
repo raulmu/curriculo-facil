@@ -8,23 +8,27 @@ import {
 } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { BehaviorSubject } from 'rxjs';
+import { NavigateService } from './navigate.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  userData: any;
+  public userData: BehaviorSubject<any> = new BehaviorSubject(null);
+
   constructor(
     public afs: AngularFirestore, // Inject Firestore service
     public auth: AngularFireAuth,
     private router: Router,
     public ngZone: NgZone,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private _nav: NavigateService
   ) {
     this.auth.authState.subscribe((user) => {
       if (user) {
-        this.userData = user;
-        localStorage.setItem('user', JSON.stringify(this.userData));
+        this.userData.next(user);
+        localStorage.setItem('user', JSON.stringify(this.userData.getValue()));
         JSON.parse(localStorage.getItem('user')!);
       } else {
         localStorage.setItem('user', 'null');
@@ -46,7 +50,10 @@ export class AuthService {
       })
       .catch((err) => {
         console.log('Something went wrong: ', err.message);
-        this._snackBar.open("Algo errado não está certo: login falhou", "fechar");
+        this._snackBar.open(
+          'Algo errado não está certo: login falhou',
+          'fechar'
+        );
       });
   }
 
@@ -76,7 +83,10 @@ export class AuthService {
         this.setUserData(result.user);
       })
       .catch((error) => {
-        this._snackBar.open("Algo errado não está certo: cadastro falhou", "fechar");
+        this._snackBar.open(
+          'Algo errado não está certo: cadastro falhou',
+          'fechar'
+        );
         console.log('Something went wrong: ', error);
       });
   }
@@ -86,8 +96,11 @@ export class AuthService {
     return this.auth.currentUser
       .then((u: any) => u.sendEmailVerification())
       .then(() => {
-        this._snackBar.open("Verificação de email enviada, verifique", "fechar");
-        this.router.navigate(['verificar-email']);
+        this._snackBar.open(
+          'Verificação de email enviada, verifique',
+          'fechar'
+        );
+        this._nav.navigateTo('/verificar-email');
       });
   }
 
@@ -95,27 +108,33 @@ export class AuthService {
     return this.auth
       .sendPasswordResetEmail(passwordResetEmail)
       .then(() => {
-        this._snackBar.open("Email para recuperação de senha enviado, verifique", "fechar");
+        this._snackBar.open(
+          'Email para recuperação de senha enviado, verifique',
+          'fechar'
+        );
       })
       .catch((error) => {
-        this._snackBar.open("Algo errado não está certo: email de recuperação falhou", "fechar");
+        this._snackBar.open(
+          'Algo errado não está certo: email de recuperação falhou',
+          'fechar'
+        );
       });
   }
 
   get isLoggedIn(): boolean {
-    const user = this.userData;
-    if(!user) return false;
+    const user = this.userData.getValue();
+    if (!user) return false;
     return user.emailVerified !== false ? true : false;
   }
 
   googleLogin() {
     var provider = new auth.GoogleAuthProvider();
     return this.oAuthLogin(provider)
-      .then((value: any) => {
-        this.router.navigate(['painel']);
-      })
       .catch((error: any) => {
-        this._snackBar.open("Algo errado não está certo: login goole falhou", "fechar");
+        this._snackBar.open(
+          'Algo errado não está certo: login goole falhou',
+          'fechar'
+        );
         console.log('Something went wrong: ', error);
       });
   }
@@ -123,18 +142,25 @@ export class AuthService {
   signOut() {
     this.auth.signOut().then(() => {
       localStorage.removeItem('user');
-      this.router.navigate(['/']);
+      this.userData.next(null);
+      this._nav.navigateTo('/');
     });
   }
 
   private oAuthLogin(provider: any) {
-    return this.auth.signInWithPopup(provider).then((result) => {
-      this.setUserData(result.user);
-      return result;
-    })
-    .catch((error) => {
-      this._snackBar.open("Algo errado não está certo: login oAuth falhou", "fechar");
-      console.log('Something went wrong: ', error);
-    });;
+    return this.auth
+      .signInWithPopup(provider)
+      .then((result) => {
+        this.setUserData(result.user).then(
+          () => this._nav.navigateTo('/')
+        );
+      })
+      .catch((error) => {
+        this._snackBar.open(
+          'Algo errado não está certo: login oAuth falhou',
+          'fechar'
+        );
+        console.log('Something went wrong: ', error);
+      });
   }
 }

@@ -7,6 +7,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
 import { HttpClientModule } from "@angular/common/http";
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatMenuModule} from '@angular/material/menu';
 
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
@@ -52,6 +53,7 @@ import { VerificarEmailComponent } from './pages/verificar-email/verificar-email
     MatIconModule,
     HttpClientModule,
     MatSnackBarModule,
+    MatMenuModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     AngularFirestoreModule,

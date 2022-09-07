@@ -1,6 +1,6 @@
 <div class="container">
   <h2 class="mat-h2">Obrigado por se cadastrar</h2>
-  <div *ngIf="authService.userData as user">
+  <div *ngIf="authService.userData | async as user">
     <p class="text-center">
       Nós enviamos um email de confirmacao para <strong>{{ user.email }}</strong
       >.

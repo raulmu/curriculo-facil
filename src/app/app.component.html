@@ -1,6 +1,32 @@
 <mat-toolbar>
   <span>Currículo Fácil</span>
+  <div class="full-width"></div>
+  <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+    <mat-icon>menu</mat-icon>
+  </button>
 </mat-toolbar>
 <div class="mat-body">
   <router-outlet></router-outlet>
 </div>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item routerLink="/">
+    <mat-icon>home</mat-icon>
+    <span>Inicial</span>
+  </button>
+  <button mat-menu-item routerLink="/painel" *ngIf="(authService.userData | async)">
+    <mat-icon>dashboard</mat-icon>
+    <span>Painel</span>
+  </button>
+  <button mat-menu-item routerLink="/perfil" *ngIf="(authService.userData | async)">
+    <mat-icon>person</mat-icon>
+    <span>Perfil</span>
+  </button>
+  <button mat-menu-item routerLink="/login" *ngIf="!(authService.userData | async)">
+    <mat-icon>login</mat-icon>
+    <span>Entrar</span>
+  </button>
+  <button mat-menu-item (click)="authService.signOut()" *ngIf="(authService.userData | async)">
+    <mat-icon>logout</mat-icon>
+    <span>Sair</span>
+  </button>
+</mat-menu>
