@@ -1,53 +1,36 @@
-<div class="displayTable">
-  <div class="displayTableCell">
-    <div class="authBlock">
-      <h3>Sign Up</h3>
-      <div class="formGroup">
-        <input
-          type="email"
-          class="formControl"
-          placeholder="Email Address"
-          #userEmail
-          required
-        />
-      </div>
-      <div class="formGroup">
-        <input
-          type="password"
-          class="formControl"
-          placeholder="Password"
-          #userPwd
-          required
-        />
-      </div>
-      <div class="formGroup">
-        <input
-          type="button"
-          class="btn btnPrimary"
-          value="Sign Up"
-          (click)="authService.signUp(userEmail.value, userPwd.value)"
-        />
-      </div>
-      <div class="formGroup">
-        <span class="or"><span class="orInner">Or</span></span>
-      </div>
-      <!-- Continue with Google -->
-      <div class="formGroup">
-        <button
-          type="button"
-          class="btn googleBtn"
-          (click)="authService.googleLogin()"
-        >
-          <i class="fab fa-google-plus-g"></i>
-          Continue with Google
-        </button>
-      </div>
-    </div>
-    <div class="redirectToLogin">
-      <span
-        >Already have an account?
-        <span class="redirect" routerLink="/login">Log In</span></span
-      >
-    </div>
+<div class="container">
+  <h3 class="mat-h3">Faça o seu cadastro</h3>
+  <form class="my-form">
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Endereço de Email</mat-label>
+      <input matInput type="email" value="" #userEmail required />
+    </mat-form-field>
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Senha</mat-label>
+      <input matInput type="password" #userPassword required />
+    </mat-form-field>
+  </form>
+  <button
+    mat-raised-button
+    (click)="authService.signUp(userEmail.value, userPassword.value)"
+    class="google"
+  >
+    Cadastrar
+  </button>
+  <div class="or">
+    <span class="orInner">ou</span>
+  </div>
+  <!-- Calling GoogleAuth Api from AuthService -->
+  <button mat-raised-button (click)="authService.googleLogin()" class="google">
+    <mat-icon
+      style="width: 40px; height: 24px"
+      svgIcon="google_logo"
+    ></mat-icon>
+    Continuar com conta Google
+  </button>
+  <div class="redirectToLogin">
+    <span>Já possui um cadastro? <a routerLink="/login" routerLinkActive="active"
+      >Faça o Login</a
+    ></span>
   </div>
 </div>

@@ -1,9 +1,9 @@
-<div class="container mat-body">
+<div class="container">
   <h3 class="mat-h3">Faça o Login</h3>
   <form class="my-form">
     <mat-form-field class="full-width" appearance="fill">
-      <mat-label>Usuário</mat-label>
-      <input matInput value="" #userName required />
+      <mat-label>Email</mat-label>
+      <input matInput value="" #userEmail required />
     </mat-form-field>
     <mat-form-field class="full-width" appearance="fill">
       <mat-label>Senha</mat-label>
@@ -11,43 +11,33 @@
     </mat-form-field>
   </form>
   <!-- Calling SignIn Api from AuthService -->
-  <div>
-    <button
-      mat-raised-button
-      (click)="authService.signIn(userName.value, userPassword.value)"
-      class="google"
-    >
-      Entrar
-    </button>
-  </div>
+  <button
+    mat-raised-button
+    (click)="authService.signIn(userEmail.value, userPassword.value)"
+    class="google"
+  >
+    Entrar
+  </button>
   <div class="or">
-    <span class="orInner">Ou</span>
+    <span class="orInner">ou</span>
   </div>
   <!-- Calling GoogleAuth Api from AuthService -->
-  <div>
-    <button
-      mat-raised-button
-      (click)="authService.googleLogin()"
-      class="google"
-    >
-      <mat-icon
-        style="width: 40px; height: 24px"
-        svgIcon="google_logo"
-      ></mat-icon>
-      Entrar com conta Google
-    </button>
-  </div>
+  <button mat-raised-button (click)="authService.googleLogin()" class="google">
+    <mat-icon
+      style="width: 40px; height: 24px"
+      svgIcon="google_logo"
+    ></mat-icon>
+    Entrar com conta Google
+  </button>
   <div class="forgotPassword">
     <a routerLink="/esqueceu-senha" routerLinkActive="active"
-      >Esqueceu a senha?</a>
+      >Esqueceu a senha?</a
+    >
   </div>
   <div class="redirectToLogin">
     <span
-      >Não tem um cadastro? <a
-        routerLink="/cadastro"
-        routerLinkActive="active"
-      >Cadastrar</a
-      ></span
+      >Não tem um cadastro?
+      <a routerLink="/cadastro" routerLinkActive="active">Cadastrar</a></span
     >
   </div>
 </div>
