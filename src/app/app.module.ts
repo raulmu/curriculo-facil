@@ -3,6 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatInputModule} from '@angular/material/input';
+import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
+import { HttpClientModule } from "@angular/common/http";
 
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
@@ -44,6 +47,9 @@ import { VerificarEmailComponent } from './pages/verificar-email/verificar-email
     BrowserAnimationsModule,
     MatToolbarModule,
     MatButtonModule,
+    MatInputModule,
+    MatIconModule,
+    HttpClientModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     AngularFirestoreModule,

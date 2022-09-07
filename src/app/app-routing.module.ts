@@ -14,7 +14,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'cadastro', component: RegistroComponent },
   { path: 'perfil', component: PerfilComponent},
-  { path: 'login-email', component: EmailLoginComponent},
+  { path: 'email-login', component: EmailLoginComponent},
   { path: 'painel', component: PainelComponent },
   { path: 'esqueceu-senha', component: EsqueceuSenhaComponent },
   { path: 'verificar-email', component: VerificarEmailComponent },
