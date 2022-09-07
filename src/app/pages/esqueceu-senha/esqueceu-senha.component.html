@@ -1,1 +1,22 @@
-<p>esqueceu-senha works!</p>
+<div class="container">
+  <h2 class="mat-h2">Recuperar Senha</h2>
+  <p class="text-center">Informe o email utilizado no cadastro</p>
+  <form class="my-form">
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Email</mat-label>
+      <input matInput value="" #userEmail required />
+    </mat-form-field>
+  </form>
+  <button
+    mat-raised-button
+    (click)="authService.forgotPassword(userEmail.value)"
+  >
+    Recuperar
+  </button>
+  <div class="redirectToLogin">
+    <span
+      >Voltar e fazer
+      <a routerLink="/login" routerLinkActive="active">Login?</a></span
+    >
+  </div>
+</div>

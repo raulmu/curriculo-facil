@@ -99,15 +99,17 @@ export class AuthService {
 
   //TODO
   get isLoggedIn(): boolean {
-    const user = JSON.parse(localStorage.getItem('user')!);
-    return user !== null && user.emailVerified !== false ? true : false;
+    const user = this.userData;
+    if(!user) return false;
+    return user.emailVerified !== false ? true : false;
   }
 
   googleLogin() {
     var provider = new auth.GoogleAuthProvider();
     return this.oAuthLogin(provider)
       .then((value: any) => {
-        console.log('Sucess', value), this.router.navigate(['painel']);
+        console.log('Sucess', value);
+        this.router.navigate(['painel']);
       })
       .catch((error: any) => {
         console.log('Something went wrong: ', error);
@@ -124,6 +126,7 @@ export class AuthService {
   private oAuthLogin(provider: any) {
     return this.auth.signInWithPopup(provider).then((result) => {
       this.setUserData(result.user);
+      return result;
     })
     .catch((error) => {
       console.log('Something went wrong: ', error);

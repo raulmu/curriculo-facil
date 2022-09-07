@@ -14,7 +14,6 @@
   <button
     mat-raised-button
     (click)="authService.signIn(userEmail.value, userPassword.value)"
-    class="google"
   >
     Entrar
   </button>
@@ -22,7 +21,7 @@
     <span class="orInner">ou</span>
   </div>
   <!-- Calling GoogleAuth Api from AuthService -->
-  <button mat-raised-button (click)="authService.googleLogin()" class="google">
+  <button mat-raised-button (click)="authService.googleLogin()">
     <mat-icon
       style="width: 40px; height: 24px"
       svgIcon="google_logo"

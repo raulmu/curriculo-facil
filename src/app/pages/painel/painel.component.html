@@ -1,1 +1,20 @@
-<p>painel works!</p>
+<div class="container">
+  <div *ngIf="authService.userData as user">
+    <ul>
+      <li>
+        Email: <strong>{{ user.email }}</strong>
+      </li>
+      <li>
+        Name:
+        <strong>{{ user.displayName ? user.displayName : "User" }}</strong>
+      </li>
+      <li>
+        Email verified: <strong>{{ user.emailVerified }}</strong>
+      </li>
+      <li>
+        Uid: <strong>{{ user.uid }}</strong>
+      </li>
+    </ul>
+    <button mat-raised-button (click)="authService.signOut()">Sair</button>
+  </div>
+</div>

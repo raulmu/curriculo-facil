@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './guard/auth.guard';
 import { EmailLoginComponent } from './pages/email-login/email-login.component';
 import { EsqueceuSenhaComponent } from './pages/esqueceu-senha/esqueceu-senha.component';
 import { InicioComponent } from './pages/inicio/inicio.component';
@@ -15,7 +16,7 @@ const routes: Routes = [
   { path: 'cadastro', component: RegistroComponent },
   { path: 'perfil', component: PerfilComponent},
   { path: 'email-login', component: EmailLoginComponent},
-  { path: 'painel', component: PainelComponent },
+  { path: 'painel', component: PainelComponent, canActivate: [AuthGuard] },
   { path: 'esqueceu-senha', component: EsqueceuSenhaComponent },
   { path: 'verificar-email', component: VerificarEmailComponent },
 ];
