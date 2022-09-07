@@ -7,6 +7,7 @@ import {
   AngularFirestoreDocument,
 } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,8 @@ export class AuthService {
     public afs: AngularFirestore, // Inject Firestore service
     public auth: AngularFireAuth,
     private router: Router,
-    public ngZone: NgZone
+    public ngZone: NgZone,
+    private _snackBar: MatSnackBar
   ) {
     this.auth.authState.subscribe((user) => {
       if (user) {
@@ -44,6 +46,7 @@ export class AuthService {
       })
       .catch((err) => {
         console.log('Something went wrong: ', err.message);
+        this._snackBar.open("Algo errado não está certo: login falhou", "fechar");
       });
   }
 
@@ -73,6 +76,7 @@ export class AuthService {
         this.setUserData(result.user);
       })
       .catch((error) => {
+        this._snackBar.open("Algo errado não está certo: cadastro falhou", "fechar");
         console.log('Something went wrong: ', error);
       });
   }
@@ -82,6 +86,7 @@ export class AuthService {
     return this.auth.currentUser
       .then((u: any) => u.sendEmailVerification())
       .then(() => {
+        this._snackBar.open("Verificação de email enviada, verifique", "fechar");
         this.router.navigate(['verificar-email']);
       });
   }
@@ -90,14 +95,13 @@ export class AuthService {
     return this.auth
       .sendPasswordResetEmail(passwordResetEmail)
       .then(() => {
-        window.alert('Password reset email sent, check your inbox.');
+        this._snackBar.open("Email para recuperação de senha enviado, verifique", "fechar");
       })
       .catch((error) => {
-        window.alert(error);
+        this._snackBar.open("Algo errado não está certo: email de recuperação falhou", "fechar");
       });
   }
 
-  //TODO
   get isLoggedIn(): boolean {
     const user = this.userData;
     if(!user) return false;
@@ -108,10 +112,10 @@ export class AuthService {
     var provider = new auth.GoogleAuthProvider();
     return this.oAuthLogin(provider)
       .then((value: any) => {
-        console.log('Sucess', value);
         this.router.navigate(['painel']);
       })
       .catch((error: any) => {
+        this._snackBar.open("Algo errado não está certo: login goole falhou", "fechar");
         console.log('Something went wrong: ', error);
       });
   }
@@ -129,6 +133,7 @@ export class AuthService {
       return result;
     })
     .catch((error) => {
+      this._snackBar.open("Algo errado não está certo: login oAuth falhou", "fechar");
       console.log('Something went wrong: ', error);
     });;
   }

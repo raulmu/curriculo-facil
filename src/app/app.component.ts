@@ -18,3 +18,6 @@ export class AppComponent {
     this.matIconRegistry.addSvgIcon('google_logo', this.domSanitizer.bypassSecurityTrustResourceUrl(googleSvg));
   }
 }
+
+
+// site alsoasked
