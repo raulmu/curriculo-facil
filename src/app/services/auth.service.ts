@@ -139,11 +139,10 @@ export class AuthService {
       });
   }
 
-  signOut() {
-    this.auth.signOut().then(() => {
-      localStorage.removeItem('user');
+  async signOut() {
+    return this.auth.signOut().then(() => {
       this.userData.next(null);
-      this._nav.navigateTo('/');
+      localStorage.removeItem('user');
     });
   }
 

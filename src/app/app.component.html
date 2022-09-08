@@ -25,7 +25,7 @@
     <mat-icon>login</mat-icon>
     <span>Entrar</span>
   </button>
-  <button mat-menu-item (click)="authService.signOut()" *ngIf="(authService.userData | async)">
+  <button mat-menu-item (click)="logout()" *ngIf="(authService.userData | async)">
     <mat-icon>logout</mat-icon>
     <span>Sair</span>
   </button>
