@@ -20,6 +20,8 @@ export class AuthService {
   user: Observable<User | null | undefined> | null = of(null);
   userData: User | null | undefined = null;
 
+  hasLoggedin: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
   constructor(
     public afs: AngularFirestore, // Inject Firestore service
     public auth: AngularFireAuth,
@@ -38,11 +40,13 @@ export class AuthService {
             JSON.parse(localStorage.getItem('user')!);
           })
         );
+        this.hasLoggedin.next(true);
       } else {
         this.user = of(null);
         localStorage.setItem('user', 'null');
         this.userData = null;
         JSON.parse(localStorage.getItem('user')!);
+        this.hasLoggedin.next(false);
       }
     });
   }
@@ -53,8 +57,10 @@ export class AuthService {
       .then((result) => {
         this.auth.authState.subscribe((user) => {
           if (user) {
+            this.hasLoggedin.next(true);
             this._nav.navigateTo('/');
           }
+
         });
       })
       .catch((err) => {
