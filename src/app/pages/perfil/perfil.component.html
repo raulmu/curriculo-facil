@@ -1,4 +1,4 @@
-<div class="container" *ngIf="authService.userData | async as user">
+<div class="container" *ngIf="authService.user | async as user">
   <ul>
     <li>
       Email: <strong>{{ user.email }}</strong>

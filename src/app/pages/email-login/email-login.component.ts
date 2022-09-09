@@ -11,4 +11,8 @@ export class EmailLoginComponent implements OnInit {
   constructor(public authService: AuthService) {}
 
   ngOnInit(): void {}
+
+  onEnter(userEmail: string, userPassword: string) {
+    this.authService.signIn(userEmail, userPassword)
+  }
 }

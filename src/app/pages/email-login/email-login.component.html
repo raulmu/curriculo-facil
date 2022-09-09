@@ -3,11 +3,12 @@
   <form class="my-form">
     <mat-form-field class="full-width" appearance="fill">
       <mat-label>Email</mat-label>
-      <input matInput value="" #userEmail required />
+      <input matInput value="" #userEmail required  (keyup.enter)="onEnter(userEmail.value, userPassword.value)"/>
     </mat-form-field>
     <mat-form-field class="full-width" appearance="fill">
       <mat-label>Senha</mat-label>
-      <input matInput type="password" #userPassword required autocomplete="current-password"/>
+
+      <input matInput type="password" #userPassword  (keyup.enter)="onEnter(userEmail.value, userPassword.value)" required autocomplete="current-password" />
     </mat-form-field>
   </form>
   <!-- Calling SignIn Api from AuthService -->

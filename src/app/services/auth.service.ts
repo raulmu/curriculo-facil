@@ -8,14 +8,17 @@ import {
 } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, tap } from 'rxjs';
 import { NavigateService } from './navigate.service';
+import { doc, getDoc } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  public userData: BehaviorSubject<any> = new BehaviorSubject(null);
+  private userDoc: AngularFirestoreDocument<User> | null = null;
+  user: Observable<User | null | undefined> | null = of(null);
+  userData: User | null | undefined = null;
 
   constructor(
     public afs: AngularFirestore, // Inject Firestore service
@@ -27,11 +30,18 @@ export class AuthService {
   ) {
     this.auth.authState.subscribe((user) => {
       if (user) {
-        this.userData.next(user);
-        localStorage.setItem('user', JSON.stringify(this.userData.getValue()));
-        JSON.parse(localStorage.getItem('user')!);
+        this.userDoc = afs.doc<User>(`users/${user.uid}`);
+        this.user = this.userDoc.valueChanges().pipe(
+          tap((value) => {
+            this.userData = value;
+            localStorage.setItem('user', JSON.stringify(this.userData));
+            JSON.parse(localStorage.getItem('user')!);
+          })
+        );
       } else {
+        this.user = null;
         localStorage.setItem('user', 'null');
+        this.userData = null;
         JSON.parse(localStorage.getItem('user')!);
       }
     });
@@ -41,10 +51,10 @@ export class AuthService {
     return this.auth
       .signInWithEmailAndPassword(email, password)
       .then((result) => {
-        this.setUserData(result.user);
+        //this.setUserData(result.user);
         this.auth.authState.subscribe((user) => {
           if (user) {
-            this.router.navigate(['painel']);
+            this._nav.navigateTo('/');
           }
         });
       })
@@ -122,37 +132,37 @@ export class AuthService {
   }
 
   get isLoggedIn(): boolean {
-    const user = this.userData.getValue();
+    const user = this.userData;
     if (!user) return false;
     return user.emailVerified !== false ? true : false;
   }
 
   googleLogin() {
     var provider = new auth.GoogleAuthProvider();
-    return this.oAuthLogin(provider)
-      .catch((error: any) => {
-        this._snackBar.open(
-          'Algo errado não está certo: login goole falhou',
-          'fechar'
-        );
-        console.log('Something went wrong: ', error);
-      });
+    return this.oAuthLogin(provider).catch((error: any) => {
+      this._snackBar.open(
+        'Algo errado não está certo: login goole falhou',
+        'fechar'
+      );
+      console.log('Something went wrong: ', error);
+    });
   }
 
   async signOut() {
     return this.auth.signOut().then(() => {
-      this.userData.next(null);
+      this.user = of(null);
       localStorage.removeItem('user');
     });
   }
 
-  private oAuthLogin(provider: any) {
+  private async oAuthLogin(provider: any) {
     return this.auth
       .signInWithPopup(provider)
       .then((result) => {
-        this.setUserData(result.user).then(
+        /* this.setUserData(result.user).then(
           () => this._nav.navigateTo('/')
-        );
+        );*/
+        () => this._nav.navigateTo('/');
       })
       .catch((error) => {
         this._snackBar.open(

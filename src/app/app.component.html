@@ -13,19 +13,19 @@
     <mat-icon>home</mat-icon>
     <span>Inicial</span>
   </button>
-  <button mat-menu-item routerLink="/painel" *ngIf="(authService.userData | async)">
+  <button mat-menu-item routerLink="/painel" *ngIf="(authService.user | async)">
     <mat-icon>dashboard</mat-icon>
     <span>Painel</span>
   </button>
-  <button mat-menu-item routerLink="/perfil" *ngIf="(authService.userData | async)">
+  <button mat-menu-item routerLink="/perfil" *ngIf="(authService.user | async)">
     <mat-icon>person</mat-icon>
     <span>Perfil</span>
   </button>
-  <button mat-menu-item routerLink="/login" *ngIf="!(authService.userData | async)">
+  <button mat-menu-item routerLink="/login" *ngIf="!(authService.user | async)">
     <mat-icon>login</mat-icon>
     <span>Entrar</span>
   </button>
-  <button mat-menu-item (click)="logout()" *ngIf="(authService.userData | async)">
+  <button mat-menu-item (click)="logout()" *ngIf="(authService.user | async)">
     <mat-icon>logout</mat-icon>
     <span>Sair</span>
   </button>
