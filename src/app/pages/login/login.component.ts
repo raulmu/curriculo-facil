@@ -12,8 +12,8 @@ export class LoginComponent implements OnInit {
   constructor(private authService: AuthService, private _nav: NavigateService) { }
 
   ngOnInit(): void {
-    this.authService.user?.subscribe(() => {
-      this._nav.navigateTo('/');
+    this.authService.user?.subscribe((user) => {
+      if(user) this._nav.navigateTo('/');
     });
   }
 
