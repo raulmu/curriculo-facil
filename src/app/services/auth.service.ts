@@ -39,7 +39,7 @@ export class AuthService {
           })
         );
       } else {
-        this.user = null;
+        this.user = of(null);
         localStorage.setItem('user', 'null');
         this.userData = null;
         JSON.parse(localStorage.getItem('user')!);
@@ -51,7 +51,6 @@ export class AuthService {
     return this.auth
       .signInWithEmailAndPassword(email, password)
       .then((result) => {
-        //this.setUserData(result.user);
         this.auth.authState.subscribe((user) => {
           if (user) {
             this._nav.navigateTo('/');
@@ -77,6 +76,7 @@ export class AuthService {
       displayName: user.displayName,
       photoURL: user.photoURL,
       emailVerified: user.emailVerified,
+      curriculosUID: user.curriculosUID
     };
     return userRef.set(userData, {
       merge: true,
@@ -151,6 +151,7 @@ export class AuthService {
   async signOut() {
     return this.auth.signOut().then(() => {
       this.user = of(null);
+      this.userData = null;
       localStorage.removeItem('user');
     });
   }
@@ -159,9 +160,6 @@ export class AuthService {
     return this.auth
       .signInWithPopup(provider)
       .then((result) => {
-        /* this.setUserData(result.user).then(
-          () => this._nav.navigateTo('/')
-        );*/
         () => this._nav.navigateTo('/');
       })
       .catch((error) => {
