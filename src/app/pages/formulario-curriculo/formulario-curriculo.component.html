@@ -71,6 +71,45 @@
     <mat-checkbox color="primary" formControlName="whatsapp"
       >Tem whatsapp?</mat-checkbox
     >
+    <h3>Endereço</h3>
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Número</mat-label>
+      <input matInput formControlName="numero" autocomplete="numero" />
+    </mat-form-field>
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Complemento</mat-label>
+      <input matInput formControlName="complemento" autocomplete="complemento" />
+    </mat-form-field>
+    <div class="flex-row">
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>CEP</mat-label>
+        <input matInput required formControlName="cep" autocomplete="cep" />
+      </mat-form-field>
+      <div class="padding-8">
+      <button
+        [disabled]="!isCepValid()"
+        mat-raised-button
+        (click)="consultarCep()"
+      >
+        Consultar
+      </button></div>
+    </div>
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Rua</mat-label>
+      <input matInput required formControlName="rua" autocomplete="rua" />
+    </mat-form-field>
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Bairro</mat-label>
+      <input matInput required formControlName="bairro" autocomplete="bairro" />
+    </mat-form-field>
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Cidade</mat-label>
+      <input matInput required formControlName="cidade" autocomplete="cidade" />
+    </mat-form-field>
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Estado</mat-label>
+      <input matInput required formControlName="estado" autocomplete="estado" />
+    </mat-form-field>
   </form>
   <!-- Calling SignIn Api from AuthService -->
   <button

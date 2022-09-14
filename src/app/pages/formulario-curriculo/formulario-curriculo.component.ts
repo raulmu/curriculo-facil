@@ -1,3 +1,4 @@
+import { _isNumberValue } from '@angular/cdk/coercion';
 import {
   AfterViewInit,
   Component,
@@ -13,6 +14,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { CepService } from 'src/app/services/cep.service';
 import { Curriculo } from 'src/app/services/curriculo';
 import { CurriculoList } from 'src/app/services/curriculoList';
 import { CurriculosService } from 'src/app/services/curriculos.service';
@@ -70,12 +72,40 @@ export class FormularioCurriculoComponent implements OnInit {
     whatsapp: new FormControl(false, [
       Validators.required
     ]),
+    cep: new FormControl('', [
+      Validators.required,
+      Validators.maxLength(9),
+      Validators.minLength(8)
+    ]),
+    rua: new FormControl('', [
+      Validators.required,
+      Validators.maxLength(120)
+    ]),
+    bairro: new FormControl('', [
+      Validators.required,
+      Validators.maxLength(40)
+    ]),
+    estado: new FormControl('', [
+      Validators.required,
+      Validators.maxLength(40)
+    ]),
+    cidade: new FormControl('', [
+      Validators.required,
+      Validators.maxLength(40)
+    ]),
+    numero: new FormControl('', [
+      Validators.maxLength(10)
+    ]),
+    complemento: new FormControl('', [
+      Validators.maxLength(20)
+    ])
   });
 
   constructor(
     private curriculosService: CurriculosService,
     private route: ActivatedRoute,
-    private _nav: NavigateService
+    private _nav: NavigateService,
+    private cepService: CepService
   ) {
     this.uid = this.route.snapshot.paramMap.get('id');
     this.curriculosService.curriculoList?.subscribe((userCurriculos) => {
@@ -90,7 +120,7 @@ export class FormularioCurriculoComponent implements OnInit {
 
   preencheValoresIniciais() {
     const dataStr = this.curriculoSelected!.data_nascimento!;
-    this.curriculoForm.patchValue({
+    let obj: any = {
       name: this.curriculoSelected!.name,
       identifier: this.curriculoSelected!.identifier,
       email: this.curriculoSelected!.email,
@@ -98,8 +128,18 @@ export class FormularioCurriculoComponent implements OnInit {
       data_nascimento: dataStr,
       nacionalidade: this.curriculoSelected!.nacionalidade,
       telefone: this.curriculoSelected!.telefone,
-      whatsapp: this.curriculoSelected!.whatsapp
-    });
+      whatsapp: this.curriculoSelected!.whatsapp,
+      cep: this.curriculoSelected!.cep,
+      rua: this.curriculoSelected!.rua,
+      bairro: this.curriculoSelected!.bairro,
+      estado: this.curriculoSelected!.estado,
+      cidade: this.curriculoSelected!.cidade,
+      numero: this.curriculoSelected!.numero,
+      complemento: this.curriculoSelected!.complemento
+    };
+    Object.keys(obj).forEach(key => {
+      if (obj[key] === undefined) obj[key] = '';});
+    this.curriculoForm.patchValue(obj);
     const parseData = new Date(dataStr);
     if (parseData) {
       this.dataNascimento.setValue(parseData);
@@ -182,5 +222,19 @@ export class FormularioCurriculoComponent implements OnInit {
 
   isFormValid() {
     return this.curriculoForm.valid;
+  }
+  isCepValid() {
+    let cep = this.curriculoForm.value.cep!.replace('-', '');
+    return cep.length == 8 && _isNumberValue(cep);
+  }
+  consultarCep() {
+    this.cepService.getData(this.curriculoForm.value.cep!).subscribe(
+      (data: any) => {
+        this.curriculoForm.controls['rua'].setValue(data.street);
+        this.curriculoForm.controls['bairro'].setValue(data.neighborhood);
+        this.curriculoForm.controls['cidade'].setValue(data.city);
+        this.curriculoForm.controls['estado'].setValue(data.state);
+      }
+    )
   }
 }

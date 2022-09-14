@@ -8,4 +8,11 @@ export interface Curriculo {
   nacionalidade: string | null;
   telefone: string | null;
   whatsapp: boolean | null;
+  cep: string | null;
+  rua: string | null;
+  bairro: string | null;
+  estado: string | null;
+  cidade: string | null;
+  numero: string | null;
+  complemento: string | null;
 }
