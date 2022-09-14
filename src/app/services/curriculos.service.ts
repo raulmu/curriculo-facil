@@ -47,4 +47,19 @@ export class CurriculosService {
         });
     }
   }
+
+  public updateCurriculosList(curriculoList: CurriculoList | undefined) {
+    if(curriculoList) {
+      const curriculoListRef = this.afs.doc<CurriculoList>(
+        `curriculos/${curriculoList.uid}`
+      );
+      return curriculoListRef.set(
+        curriculoList, {
+          merge: true
+        }
+      );
+    }
+    return Promise.reject();
+  }
+
 }

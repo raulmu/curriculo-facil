@@ -1,13 +1,17 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatInputModule} from '@angular/material/input';
-import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
-import { HttpClientModule } from "@angular/common/http";
-import {MatSnackBarModule} from '@angular/material/snack-bar';
-import {MatMenuModule} from '@angular/material/menu';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { HttpClientModule } from '@angular/common/http';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatMenuModule } from '@angular/material/menu';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
@@ -29,7 +33,8 @@ import { AuthService } from './services/auth.service';
 import { PainelComponent } from './pages/painel/painel.component';
 import { EsqueceuSenhaComponent } from './pages/esqueceu-senha/esqueceu-senha.component';
 import { VerificarEmailComponent } from './pages/verificar-email/verificar-email.component';
-
+import { FormularioCurriculoComponent } from './pages/formulario-curriculo/formulario-curriculo.component';
+import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -41,7 +46,8 @@ import { VerificarEmailComponent } from './pages/verificar-email/verificar-email
     EmailLoginComponent,
     PainelComponent,
     EsqueceuSenhaComponent,
-    VerificarEmailComponent
+    VerificarEmailComponent,
+    FormularioCurriculoComponent,
   ],
   imports: [
     BrowserModule,
@@ -51,21 +57,23 @@ import { VerificarEmailComponent } from './pages/verificar-email/verificar-email
     MatButtonModule,
     MatInputModule,
     MatIconModule,
+    MatNativeDateModule,
     HttpClientModule,
     MatSnackBarModule,
     MatMenuModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatCheckboxModule,
+    ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     AngularFirestoreModule,
     AngularFireStorageModule,
     AngularFireDatabaseModule,
   ],
-  providers: [
-    AuthService
-  ]
-  ,
-  bootstrap: [AppComponent]
+  providers: [AuthService,{ provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
 
 // https://www.positronx.io/full-angular-firebase-authentication-system/

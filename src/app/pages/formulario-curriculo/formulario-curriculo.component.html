@@ -1,0 +1,84 @@
+<div class="container">
+  <h2 class="mat-h2">{{ pageTitle() }}</h2>
+  <form class="my-form" [formGroup]="curriculoForm">
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Identificador</mat-label>
+      <input matInput required formControlName="identifier" />
+    </mat-form-field>
+    <h3>Dados Pessoais</h3>
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Nome Completo</mat-label>
+      <input
+        matInput
+        required
+        formControlName="name"
+        autocomplete="full-name"
+      />
+    </mat-form-field>
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Email</mat-label>
+      <input
+        matInput
+        required
+        formControlName="email"
+        autocomplete="current-email"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Estado Civil</mat-label>
+      <mat-select formControlName="estado_civil">
+        <mat-option>Não selecionado</mat-option>
+        <mat-option [value]="option" *ngFor="let option of estadoCivisList">{{
+          option
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Data de Nascimento</mat-label>
+      <input
+        #dataNascimentoInput
+        matInput
+        [matDatepicker]="picker"
+        (keyup)="changeDatePicker()"
+        (onchange)="changeDatePicker()"
+        (dateChange)="changeDatePicker()"
+        [formControl]="dataNascimento"
+      />
+      <mat-hint>DD/MM/AAAA</mat-hint>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <input class="display-none" formControlName="data_nascimento" />
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Nacionalidade</mat-label>
+      <input
+        matInput
+        required
+        formControlName="nacionalidade"
+        autocomplete="nacionalidade"
+      />
+    </mat-form-field>
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Telefone com DDD</mat-label>
+      <input
+        matInput
+        required
+        formControlName="telefone"
+        autocomplete="telefone"
+      />
+    </mat-form-field>
+
+    <mat-checkbox color="primary" formControlName="whatsapp"
+      >Tem whatsapp?</mat-checkbox
+    >
+  </form>
+  <!-- Calling SignIn Api from AuthService -->
+  <button
+    [disabled]="!isFormValid()"
+    mat-raised-button
+    color="primary"
+    (click)="gravar()"
+  >
+    Salvar
+  </button>
+</div>

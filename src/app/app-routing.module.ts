@@ -4,6 +4,7 @@ import { AuthGuard } from './guard/auth.guard';
 import { NoAuthGuard } from './guard/no-auth.guard';
 import { EmailLoginComponent } from './pages/email-login/email-login.component';
 import { EsqueceuSenhaComponent } from './pages/esqueceu-senha/esqueceu-senha.component';
+import { FormularioCurriculoComponent } from './pages/formulario-curriculo/formulario-curriculo.component';
 import { InicioComponent } from './pages/inicio/inicio.component';
 import { LoginComponent } from './pages/login/login.component';
 import { PainelComponent } from './pages/painel/painel.component';
@@ -20,6 +21,8 @@ const routes: Routes = [
   { path: 'painel', component: PainelComponent, canActivate: [AuthGuard] },
   { path: 'esqueceu-senha', component: EsqueceuSenhaComponent, canActivate: [NoAuthGuard]},
   { path: 'verificar-email', component: VerificarEmailComponent, canActivate: [AuthGuard]},
+  { path: 'curriculo', component: FormularioCurriculoComponent, canActivate: [AuthGuard]},
+  { path: 'curriculo/:id', component: FormularioCurriculoComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({

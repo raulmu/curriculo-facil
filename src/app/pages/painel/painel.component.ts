@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
+import { Curriculo } from 'src/app/services/curriculo';
 import { CurriculosService } from 'src/app/services/curriculos.service';
 
 @Component({
@@ -9,7 +10,7 @@ import { CurriculosService } from 'src/app/services/curriculos.service';
 })
 export class PainelComponent implements OnInit {
 
-  userCurriculos = [];
+  userCurriculos: Curriculo[] = [];
 
   constructor(
     public authService: AuthService,

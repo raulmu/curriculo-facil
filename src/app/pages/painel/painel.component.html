@@ -1,4 +1,27 @@
 <div class="container">
-  <p>Quantidade de Currículos: {{userCurriculos.length}} </p>
+  <div class="flex-row align-items-center">
+    <div>Quantidade de Currículos: {{ userCurriculos.length }}</div>
+    <button mat-icon-button color="primary" routerLink="/curriculo">
+      <mat-icon>add_circle</mat-icon>
+    </button>
+  </div>
+  <div class="full-width">
+    <ul>
+      <li>
+        <div class="flex-row align-items-center painel-row">
+          <span class="mat-body-2">Identificador</span>
+          <div class="full-width"></div>
+        </div>
+      </li>
+      <li *ngFor="let curriculo of userCurriculos">
+        <div class="flex-row align-items-center painel-row">
+          <span>{{ curriculo.identifier }}</span>
+          <div class="full-width"></div>
+          <button mat-icon-button color="primary" routerLink="/curriculo/{{curriculo.uid}}">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
 </div>
-
