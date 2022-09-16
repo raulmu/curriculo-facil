@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import {
   AbstractControl,
+  FormArray,
   FormControl,
   FormGroup,
   ValidatorFn,
@@ -19,6 +20,7 @@ import { Curriculo } from 'src/app/services/curriculo';
 import { CurriculoList } from 'src/app/services/curriculoList';
 import { CurriculosService } from 'src/app/services/curriculos.service';
 import { NavigateService } from 'src/app/services/navigate.service';
+import { ProgressBarService } from 'src/app/services/progress-bar.service';
 
 @Component({
   selector: 'app-formulario-curriculo',
@@ -40,6 +42,24 @@ export class FormularioCurriculoComponent implements OnInit {
     'Viúva',
     'Divorciado',
     'Divorciada',
+  ];
+  escolaridadeList = [
+    'Ensino Fundamental - Completo',
+    'Ensino Fundamental - Incompleto',
+    'Ensino Médio - Completo',
+    'Ensino Médio - Incompleto',
+    'Curso Técnico - Completo',
+    'Curso Técnico - Incompleto',
+    'Curso Superior - Completo',
+    'Curso Superior - Incompleto',
+    'Pós Graduação - Especialização - Completo',
+    'Pós Graduação - Especialização - Incompleto',
+    'Pós Graduação - MBA - Completo',
+    'Pós Graduação - MBA - Incompleto',
+    'Pós Graduação - Mestrado - Completo',
+    'Pós Graduação - Mestrado - Incompleto',
+    'Pós Graduação - Doutorado - Completo',
+    'Pós Graduação - Doutorado - Incompleto',
   ];
 
   curriculoForm = new FormGroup({
@@ -69,43 +89,44 @@ export class FormularioCurriculoComponent implements OnInit {
       Validators.required,
       Validators.maxLength(16),
     ]),
-    whatsapp: new FormControl(false, [
-      Validators.required
-    ]),
+    whatsapp: new FormControl(false, [Validators.required]),
     cep: new FormControl('', [
       Validators.required,
       Validators.maxLength(9),
-      Validators.minLength(8)
+      Validators.minLength(8),
     ]),
-    rua: new FormControl('', [
-      Validators.required,
-      Validators.maxLength(120)
-    ]),
+    rua: new FormControl('', [Validators.required, Validators.maxLength(120)]),
     bairro: new FormControl('', [
       Validators.required,
-      Validators.maxLength(40)
+      Validators.maxLength(40),
     ]),
     estado: new FormControl('', [
       Validators.required,
-      Validators.maxLength(40)
+      Validators.maxLength(40),
     ]),
     cidade: new FormControl('', [
       Validators.required,
-      Validators.maxLength(40)
+      Validators.maxLength(40),
     ]),
-    numero: new FormControl('', [
-      Validators.maxLength(10)
+    numero: new FormControl('', [Validators.maxLength(10)]),
+    complemento: new FormControl('', [Validators.maxLength(20)]),
+    escolaridade: new FormControl('', [
+      Validators.required,
+      FormularioCurriculoComponent.checkCategoryInput(this.escolaridadeList),
     ]),
-    complemento: new FormControl('', [
-      Validators.maxLength(20)
-    ])
+    descricao_escolaridade: new FormControl('', [
+      Validators.required,
+      Validators.maxLength(70),
+    ]),
+    cursos: new FormArray([]),
   });
 
   constructor(
     private curriculosService: CurriculosService,
     private route: ActivatedRoute,
     private _nav: NavigateService,
-    private cepService: CepService
+    private cepService: CepService,
+    private progressBarService: ProgressBarService
   ) {
     this.uid = this.route.snapshot.paramMap.get('id');
     this.curriculosService.curriculoList?.subscribe((userCurriculos) => {
@@ -135,11 +156,21 @@ export class FormularioCurriculoComponent implements OnInit {
       estado: this.curriculoSelected!.estado,
       cidade: this.curriculoSelected!.cidade,
       numero: this.curriculoSelected!.numero,
-      complemento: this.curriculoSelected!.complemento
+      complemento: this.curriculoSelected!.complemento,
+      escolaridade: this.curriculoSelected!.escolaridade,
+      descricao_escolaridade: this.curriculoSelected!.descricao_escolaridade,
     };
-    Object.keys(obj).forEach(key => {
-      if (obj[key] === undefined) obj[key] = '';});
+    Object.keys(obj).forEach((key) => {
+      if (obj[key] === undefined) obj[key] = '';
+    });
     this.curriculoForm.patchValue(obj);
+    const cursos = this.curriculoSelected!.cursos;
+    this.curriculoForm.controls['cursos'] = new FormArray([]);
+    if (cursos?.length) {
+      cursos.map((el) => {
+        if (el.length) this.addCurso(el);
+      });
+    }
     const parseData = new Date(dataStr);
     if (parseData) {
       this.dataNascimento.setValue(parseData);
@@ -181,6 +212,7 @@ export class FormularioCurriculoComponent implements OnInit {
   }
 
   gravar() {
+    this.progressBarService.show.next(true);
     if (this.isFormValid()) {
       const curriculo: Curriculo = {
         uid: this.uid!,
@@ -199,11 +231,12 @@ export class FormularioCurriculoComponent implements OnInit {
       }
       this.curriculosService
         .updateCurriculosList(this.curriculosList)
-        .then((obj) => {
-          console.log({ obj });
+        .then((_) => {
+          this.progressBarService.show.next(false);
           this._nav.navigateTo('painel');
         })
         .catch((err) => {
+          this.progressBarService.show.next(false);
           console.log({ err });
         });
     }
@@ -228,13 +261,33 @@ export class FormularioCurriculoComponent implements OnInit {
     return cep.length == 8 && _isNumberValue(cep);
   }
   consultarCep() {
+    this.progressBarService.show.next(true);
     this.cepService.getData(this.curriculoForm.value.cep!).subscribe(
       (data: any) => {
         this.curriculoForm.controls['rua'].setValue(data.street);
         this.curriculoForm.controls['bairro'].setValue(data.neighborhood);
         this.curriculoForm.controls['cidade'].setValue(data.city);
         this.curriculoForm.controls['estado'].setValue(data.state);
+        this.progressBarService.show.next(false);
+      },
+      (err) => {
+        console.log(err);
+        this.progressBarService.show.next(false);
       }
-    )
+    );
+  }
+  get cursos() {
+    return this.curriculoForm.get('cursos') as FormArray;
+  }
+
+  addCurso(texto: string) {
+    if (this.podeAddCurso())
+      this.cursos.push(new FormControl(texto, [Validators.required]));
+  }
+  deleteCurso(index: number) {
+    this.cursos.removeAt(index);
+  }
+  podeAddCurso() {
+    return this.cursos.length < 3;
   }
 }

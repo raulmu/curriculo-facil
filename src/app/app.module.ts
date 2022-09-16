@@ -12,6 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
@@ -65,6 +66,7 @@ import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
     MatDatepickerModule,
     MatCheckboxModule,
     ReactiveFormsModule,
+    MatProgressBarModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     AngularFirestoreModule,

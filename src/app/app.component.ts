@@ -4,6 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { environment } from '../environments/environment';
 import { AuthService } from './services/auth.service';
 import { NavigateService } from './services/navigate.service';
+import { ProgressBarService } from './services/progress-bar.service';
 
 @Component({
   selector: 'app-root',
@@ -12,14 +13,19 @@ import { NavigateService } from './services/navigate.service';
 })
 export class AppComponent {
   title = 'curriculo-facil';
+  showProgressBar = false;
   constructor(
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
     public authService: AuthService,
-    private _nav: NavigateService
+    private _nav: NavigateService,
+    private progressBarService: ProgressBarService
   ) {
     let googleSvg = `${environment.baseHref}/assets/svg/google.svg`;
     this.matIconRegistry.addSvgIcon('google_logo', this.domSanitizer.bypassSecurityTrustResourceUrl(googleSvg));
+    this.progressBarService.show.subscribe((value) => {
+      this.showProgressBar = value;
+    });
   }
 
   logout(){

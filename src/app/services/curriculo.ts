@@ -15,4 +15,7 @@ export interface Curriculo {
   cidade: string | null;
   numero: string | null;
   complemento: string | null;
+  escolaridade: string | null;
+  descricao_escolaridade: string | null;
+  cursos: string[] | null;
 }

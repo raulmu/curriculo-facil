@@ -78,7 +78,11 @@
     </mat-form-field>
     <mat-form-field class="full-width" appearance="fill">
       <mat-label>Complemento</mat-label>
-      <input matInput formControlName="complemento" autocomplete="complemento" />
+      <input
+        matInput
+        formControlName="complemento"
+        autocomplete="complemento"
+      />
     </mat-form-field>
     <div class="flex-row">
       <mat-form-field class="full-width" appearance="fill">
@@ -86,13 +90,14 @@
         <input matInput required formControlName="cep" autocomplete="cep" />
       </mat-form-field>
       <div class="padding-8">
-      <button
-        [disabled]="!isCepValid()"
-        mat-raised-button
-        (click)="consultarCep()"
-      >
-        Consultar
-      </button></div>
+        <button
+          [disabled]="!isCepValid()"
+          mat-raised-button
+          (click)="consultarCep()"
+        >
+          Consultar
+        </button>
+      </div>
     </div>
     <mat-form-field class="full-width" appearance="fill">
       <mat-label>Rua</mat-label>
@@ -110,6 +115,65 @@
       <mat-label>Estado</mat-label>
       <input matInput required formControlName="estado" autocomplete="estado" />
     </mat-form-field>
+    <h3>Escolaridade</h3>
+    <mat-form-field appearance="fill">
+      <mat-label>Selecione</mat-label>
+      <mat-select formControlName="escolaridade">
+        <mat-option>Não selecionado</mat-option>
+        <mat-option [value]="option" *ngFor="let option of escolaridadeList">{{
+          option
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Descrição da Escolaridade</mat-label>
+      <input
+        matInput
+        required
+        formControlName="descricao_escolaridade"
+        autocomplete="descricao_escolaridade"
+      />
+    </mat-form-field>
+
+    <div class="flex-row">
+      <h3>Cursos</h3>
+      <div class="padding-8">
+        <button [disabled]="!podeAddCurso()" (click)="addCurso('')" mat-icon-button color="primary">
+          <mat-icon>add_circle</mat-icon>
+        </button>
+      </div>
+    </div>
+    <p>
+      Digite aqui Até 3 cursos que você tenha feito, por exemplo, se você tem
+      conhecimentos em Informática, sabe usar o computador para ler emails,
+      navegar na internet, digitar um texto, pode colocar: Informática Básico.
+      Caso não tenha nenhum curso, pode deixar em branco.
+    </p>
+    <div formArrayName="cursos">
+      <div *ngFor="let cm of cursos.controls; index as i" class="flex-row">
+        <mat-form-field class="full-width" appearance="fill">
+          <mat-label>Curso {{ i + 1 }}</mat-label>
+          <input
+            required
+            [formControlName]="i"
+            matInput
+            autocomplete="curso_{{ i + 1 }}"
+          />
+        </mat-form-field>
+        <div class="padding-8">
+          <button (click)="deleteCurso(i)" mat-icon-button color="primary">
+            <mat-icon>remove_circle</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!--div class="flex-row">
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Curso</mat-label>
+        <input #cursoInput matInput autocomplete="curso" />
+      </mat-form-field>
+
+    </div-->
   </form>
   <!-- Calling SignIn Api from AuthService -->
   <button
