@@ -1,15 +1,28 @@
 <div class="container">
   <h2 class="mat-h2">Página Inicial</h2>
-  <div class="redirectToLogin" *ngIf="authService.user | async; else loggedOut">
+  <div class="redirectToLogin text-center" *ngIf="authService.user | async; else loggedOut">
     <span
-      >Você está Logado. Mas ainda não consegue fazer nada. O site ainda está em desenvolvimento</span
+      >Você está Logado. Mas ainda não consegue fazer nada. O site ainda está em
+      desenvolvimento</span
     >
+    <div class="margin-top-10">
+      <span>
+        Navegar para o:
+        <a routerLink="/painel" routerLinkActive="active">Seu Painel</a></span
+      >
+    </div>
   </div>
   <ng-template #loggedOut>
     <div class="redirectToLogin" *ngIf="!(authService.user | async)">
       <span
         >Já possui um cadastro?
         <a routerLink="/login" routerLinkActive="active">Faça o Login</a></span
+      >
+    </div>
+    <div class="margin-top-10">
+      <span>
+        Não tem cadastro?
+        <a routerLink="/cadastro" routerLinkActive="active">Crie um</a></span
       >
     </div>
   </ng-template>

@@ -36,6 +36,8 @@ import { EsqueceuSenhaComponent } from './pages/esqueceu-senha/esqueceu-senha.co
 import { VerificarEmailComponent } from './pages/verificar-email/verificar-email.component';
 import { FormularioCurriculoComponent } from './pages/formulario-curriculo/formulario-curriculo.component';
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
+import { AdicionaisComponent } from './pages/adicionais/adicionais.component';
+import { ExcluirPerfilComponent } from './pages/excluir-perfil/excluir-perfil.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +51,8 @@ import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
     EsqueceuSenhaComponent,
     VerificarEmailComponent,
     FormularioCurriculoComponent,
+    AdicionaisComponent,
+    ExcluirPerfilComponent,
   ],
   imports: [
     BrowserModule,

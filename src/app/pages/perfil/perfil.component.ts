@@ -15,4 +15,8 @@ export class PerfilComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  excluirPerfil() {
+    this.authService.deleteUser();
+  }
+
 }

@@ -5,4 +5,5 @@ export interface User {
   photoURL: string;
   emailVerified: boolean;
   curriculosUID: string | null;
+  loginMode: 'google-oauth' | 'email-password';
 }

@@ -19,7 +19,6 @@ export class CurriculosService {
     public afs: AngularFirestore, // Inject Firestore service
     public authService: AuthService
   ) {
-    const user = this.authService.user;
     const userData = this.authService.userData;
     if (!userData) {
       return;
@@ -43,9 +42,14 @@ export class CurriculosService {
         })
         .then((x: any) => {
           userData.curriculosUID = userData.uid;
-          this.authService.setUserData(userData).then();
+          this.authService.setUserData(userData, userData.loginMode).then();
         });
     }
+  }
+
+  public deleteCurriculoFromList(uid: string, curriculoList: CurriculoList) {
+    curriculoList.curriculos = curriculoList.curriculos.filter((el: any) => el.uid != uid);
+    return this.updateCurriculosList(curriculoList);
   }
 
   public updateCurriculosList(curriculoList: CurriculoList | undefined) {

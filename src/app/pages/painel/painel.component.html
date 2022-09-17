@@ -1,11 +1,11 @@
 <div class="container">
   <div class="flex-row align-items-center">
     <div>Quantidade de Currículos: {{ userCurriculos.length }}</div>
-    <button mat-icon-button color="primary" routerLink="/curriculo">
+    <button mat-icon-button color="primary" (click)="addCurriculo()">
       <mat-icon>add_circle</mat-icon>
     </button>
   </div>
-  <div class="full-width">
+  <div class="full-width" *ngIf="userCurriculos.length">
     <ul>
       <li>
         <div class="flex-row align-items-center painel-row">
@@ -19,6 +19,9 @@
           <div class="full-width"></div>
           <button mat-icon-button color="primary" routerLink="/curriculo/{{curriculo.uid}}">
             <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" (click)="deleteCurriculo(curriculo.uid)">
+            <mat-icon>remove_circle</mat-icon>
           </button>
         </div>
       </li>

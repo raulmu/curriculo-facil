@@ -13,10 +13,11 @@ export class NavigateService {
 
   navigateTo(url: string) {
     this.router.navigateByUrl(url).then(
-      (worked) => {
+      (_) => {
         //works only because we hooked the routeReuseStrategy.shouldReuseRoute above
       },
       (error) => {
+        console.log({error});
         this._snackBar.open(
           `Algo errado não está certo: falhou`,
           'fechar'

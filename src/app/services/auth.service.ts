@@ -25,7 +25,6 @@ export class AuthService {
   constructor(
     public afs: AngularFirestore, // Inject Firestore service
     public auth: AngularFireAuth,
-    private router: Router,
     public ngZone: NgZone,
     private _snackBar: MatSnackBar,
     private _nav: NavigateService
@@ -37,7 +36,7 @@ export class AuthService {
           tap((value) => {
             this.userData = value;
             localStorage.setItem('user', JSON.stringify(this.userData));
-            JSON.parse(localStorage.getItem('user')!);
+            this.userData && JSON.parse(localStorage.getItem('user')!);
           })
         );
         this.hasLoggedin.next(true);
@@ -55,13 +54,7 @@ export class AuthService {
     return this.auth
       .signInWithEmailAndPassword(email, password)
       .then((result) => {
-        this.auth.authState.subscribe((user) => {
-          if (user) {
-            this.hasLoggedin.next(true);
-            this._nav.navigateTo('/');
-          }
-
-        });
+        this._nav.navigateTo('/');
       })
       .catch((err) => {
         console.log('Something went wrong: ', err.message);
@@ -72,7 +65,7 @@ export class AuthService {
       });
   }
 
-  setUserData(user: any) {
+  setUserData(user: any, loginMode: 'google-oauth' | 'email-password') {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(
       `users/${user.uid}`
     );
@@ -82,7 +75,8 @@ export class AuthService {
       displayName: user.displayName,
       photoURL: user.photoURL,
       emailVerified: user.emailVerified,
-      curriculosUID: user.curriculosUID
+      curriculosUID: user.curriculosUID ? user.curriculosUID : null,
+      loginMode: loginMode,
     };
     return userRef.set(userData, {
       merge: true,
@@ -96,7 +90,7 @@ export class AuthService {
         /* Call the SendVerificaitonMail() function when new user sign
         up and returns promise */
         this.sendVerificationMail();
-        this.setUserData(result.user);
+        this.setUserData(result.user, 'email-password');
       })
       .catch((error) => {
         this._snackBar.open(
@@ -145,7 +139,7 @@ export class AuthService {
 
   googleLogin() {
     var provider = new auth.GoogleAuthProvider();
-    return this.oAuthLogin(provider).catch((error: any) => {
+    return this.oAuthLogin(provider, 'google-oauth').catch((error: any) => {
       this._snackBar.open(
         'Algo errado não está certo: login goole falhou',
         'fechar'
@@ -162,11 +156,49 @@ export class AuthService {
     });
   }
 
-  private async oAuthLogin(provider: any) {
+  public deleteUser() {
+    if (this.userData) {
+      const userDataToDelete = this.userData;
+      return this.auth.currentUser
+        .then((user) => {
+          user?.delete();
+          this.deleteUserData(userDataToDelete.uid).then((_) => {
+            this.deleteCurriloListData(userDataToDelete.curriculosUID!).then(
+              (_) => {
+              }
+            );
+          });
+        })
+        .catch((err) => {
+          this._nav.navigateTo('/excluir-perfil');
+        });
+    }
+    return Promise.reject('No userData to delete');
+  }
+
+  deleteUserData(userId: string) {
+    const userRef: AngularFirestoreDocument<any> = this.afs.doc(
+      `users/${userId}`
+    );
+    return userRef.delete();
+  }
+
+  deleteCurriloListData(curriloUID: string) {
+    const curriloListRef: AngularFirestoreDocument<any> = this.afs.doc(
+      `curriculos/${curriloUID}`
+    );
+    return curriloListRef.delete();
+  }
+
+  private async oAuthLogin(
+    provider: any,
+    loginMode: 'google-oauth' | 'email-password'
+  ) {
     return this.auth
       .signInWithPopup(provider)
       .then((result) => {
-        () => this._nav.navigateTo('/');
+        this.setUserData(result.user, loginMode);
+        this._nav.navigateTo('/');
       })
       .catch((error) => {
         this._snackBar.open(

@@ -21,6 +21,7 @@ import { CurriculoList } from 'src/app/services/curriculoList';
 import { CurriculosService } from 'src/app/services/curriculos.service';
 import { NavigateService } from 'src/app/services/navigate.service';
 import { ProgressBarService } from 'src/app/services/progress-bar.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-formulario-curriculo',
@@ -62,18 +63,27 @@ export class FormularioCurriculoComponent implements OnInit {
     'Pós Graduação - Doutorado - Incompleto',
   ];
 
+  fakeData = {
+    name: '',
+    identifier: '',
+    email: '',
+    estado_civil: '',
+  }
+
+
+
   curriculoForm = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.maxLength(35)]),
-    identifier: new FormControl('', [
+    name: new FormControl(this.fakeData.name, [Validators.required, Validators.maxLength(35)]),
+    identifier: new FormControl(this.fakeData.identifier, [
       Validators.required,
       Validators.maxLength(25),
     ]),
-    email: new FormControl('', [
+    email: new FormControl(this.fakeData.email, [
       Validators.required,
       Validators.email,
       Validators.maxLength(30),
     ]),
-    estado_civil: new FormControl('', [
+    estado_civil: new FormControl(this.fakeData.estado_civil, [
       Validators.required,
       FormularioCurriculoComponent.checkCategoryInput(this.estadoCivisList),
     ]),
@@ -134,7 +144,7 @@ export class FormularioCurriculoComponent implements OnInit {
       this.curriculoSelected = this.curriculosList?.curriculos.filter(
         (el: any) => (el.uid = this.uid)
       )[0];
-      this.preencheValoresIniciais();
+      if(this.curriculoSelected) this.preencheValoresIniciais();
     });
   }
   ngOnInit(): void {}
@@ -199,7 +209,6 @@ export class FormularioCurriculoComponent implements OnInit {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const val = control.value;
       if (
-        val.length == 10 &&
         FormularioCurriculoComponent.isValidDate(new Date(val))
       )
         return null;
@@ -218,7 +227,7 @@ export class FormularioCurriculoComponent implements OnInit {
         uid: this.uid!,
         ...this.curriculoForm.getRawValue(),
       };
-      console.log({ curriculo });
+      curriculo.uid = curriculo.uid ? curriculo.uid : uuidv4();
       if (!this.isEditMode()) {
         this.curriculosList?.curriculos.push(curriculo);
       } else {
@@ -282,7 +291,7 @@ export class FormularioCurriculoComponent implements OnInit {
 
   addCurso(texto: string) {
     if (this.podeAddCurso())
-      this.cursos.push(new FormControl(texto, [Validators.required]));
+      this.cursos.push(new FormControl(texto, [Validators.required, Validators.maxLength(50)]));
   }
   deleteCurso(index: number) {
     this.cursos.removeAt(index);

@@ -1,0 +1,45 @@
+<div class="container" *ngIf="authService.user | async as user">
+  <p>Refaça o login antes de excluir o Perfil</p>
+  <div *ngIf="user.loginMode == 'google-oauth'">
+    <button mat-raised-button (click)="googleLogin()" class="google">
+      <mat-icon
+        style="width: 40px; height: 24px"
+        svgIcon="google_logo"
+      ></mat-icon>
+      Excluir perfil
+    </button>
+  </div>
+  <div *ngIf="user.loginMode == 'email-password'" class="full-width text-center">
+    <form class="my-form">
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          value=""
+          #userEmail
+          required
+          (keyup.enter)="onEnter(userEmail.value, userPassword.value)"
+        />
+      </mat-form-field>
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-label>Senha</mat-label>
+
+        <input
+          matInput
+          type="password"
+          #userPassword
+          (keyup.enter)="onEnter(userEmail.value, userPassword.value)"
+          required
+          autocomplete="current-password"
+        />
+      </mat-form-field>
+    </form>
+    <!-- Calling SignIn Api from AuthService -->
+    <button
+      mat-raised-button
+      (click)="emailLogin(userEmail.value, userPassword.value)"
+    >
+      Excluir Perfil
+    </button>
+  </div>
+</div>
