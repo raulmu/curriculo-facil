@@ -22,8 +22,8 @@ export class NoAuthGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    const isLoggedIn = this.authService.isLoggedIn;
-    if (isLoggedIn) {
+    const user = this.authService.didLoggedIn.getValue();
+    if (user) {
       console.log('Acesso negado: NoAuthGuard');
       this.router.navigateByUrl('');
     }

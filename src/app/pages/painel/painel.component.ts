@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfirmDialogModel } from 'src/app/components/confirm-dialog/confirm-dialog-model';
+import { ConfirmDialogComponent } from 'src/app/components/confirm-dialog/confirm-dialog.component';
 import { AuthService } from 'src/app/services/auth.service';
 import { Curriculo } from 'src/app/services/curriculo';
 import { CurriculoList } from 'src/app/services/curriculoList';
@@ -20,9 +23,11 @@ export class PainelComponent implements OnInit {
     public curriculosService: CurriculosService,
     private _nav: NavigateService,
     private progressBarService: ProgressBarService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) {
     this.curriculosService.curriculoList?.subscribe((userCurriculos) => {
+      console.log('PainelComponentCOnstructor', userCurriculos);
       this.curriculoList = userCurriculos;
     });
   }
@@ -51,5 +56,17 @@ export class PainelComponent implements OnInit {
         console.log({err});
         this.progressBarService.show.next(false);
       });
+  }
+
+  confirmarExclusao(uid: string): void {
+    const message = `Esta exclusão não poderá ser revertida`;
+    const dialogData = new ConfirmDialogModel("Confirmar Exclusão do Currículo", message);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      maxWidth: "320px",
+      data: dialogData
+    });
+    dialogRef.afterClosed().subscribe(dialogResult => {
+      if(dialogResult) this.deleteCurriculo(uid);
+    });
   }
 }

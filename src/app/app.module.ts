@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,6 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatDialogModule} from '@angular/material/dialog';
 
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
@@ -38,6 +40,7 @@ import { FormularioCurriculoComponent } from './pages/formulario-curriculo/formu
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { AdicionaisComponent } from './pages/adicionais/adicionais.component';
 import { ExcluirPerfilComponent } from './pages/excluir-perfil/excluir-perfil.component';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 
 @NgModule({
   declarations: [
@@ -53,11 +56,13 @@ import { ExcluirPerfilComponent } from './pages/excluir-perfil/excluir-perfil.co
     FormularioCurriculoComponent,
     AdicionaisComponent,
     ExcluirPerfilComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    FormsModule,
     MatToolbarModule,
     MatButtonModule,
     MatInputModule,
@@ -71,6 +76,7 @@ import { ExcluirPerfilComponent } from './pages/excluir-perfil/excluir-perfil.co
     MatCheckboxModule,
     ReactiveFormsModule,
     MatProgressBarModule,
+    MatDialogModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     AngularFirestoreModule,

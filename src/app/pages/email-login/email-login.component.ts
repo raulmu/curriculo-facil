@@ -10,9 +10,9 @@ import { NavigateService } from 'src/app/services/navigate.service';
 export class EmailLoginComponent implements OnInit {
 
   constructor(public authService: AuthService, private _nav: NavigateService) {
-    this.authService.hasLoggedin.subscribe((hasLoggedin) => {
-      console.log({hasLoggedin});
-      if(hasLoggedin) this._nav.navigateTo('/');
+    this.authService.user.subscribe((user) => {
+      console.log({user});
+      if(user) this._nav.navigateTo('/');
     });
   }
 

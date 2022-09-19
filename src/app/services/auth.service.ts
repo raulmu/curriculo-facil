@@ -6,21 +6,20 @@ import {
   AngularFirestore,
   AngularFirestoreDocument,
 } from '@angular/fire/compat/firestore';
-import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, map, Observable, of, tap } from 'rxjs';
 import { NavigateService } from './navigate.service';
-import { doc, getDoc } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private userDoc: AngularFirestoreDocument<User> | null = null;
-  user: Observable<User | null | undefined> | null = of(null);
   userData: User | null | undefined = null;
-
-  hasLoggedin: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public user: BehaviorSubject<User | null | undefined> = new BehaviorSubject(
+    this.userData
+  );
+  didLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(
     public afs: AngularFirestore, // Inject Firestore service
@@ -29,31 +28,24 @@ export class AuthService {
     private _snackBar: MatSnackBar,
     private _nav: NavigateService
   ) {
+
     this.auth.authState.subscribe((user) => {
-      if (user) {
-        this.userDoc = afs.doc<User>(`users/${user.uid}`);
-        this.user = this.userDoc.valueChanges().pipe(
-          tap((value) => {
-            this.userData = value;
-            localStorage.setItem('user', JSON.stringify(this.userData));
-            this.userData && JSON.parse(localStorage.getItem('user')!);
-          })
-        );
-        this.hasLoggedin.next(true);
+      if (user && user.uid) {
+        this.getUserData(user.uid).subscribe((_) => {
+          this.didLoggedIn.next(true);
+        });
       } else {
-        this.user = of(null);
-        localStorage.setItem('user', 'null');
         this.userData = null;
-        JSON.parse(localStorage.getItem('user')!);
-        this.hasLoggedin.next(false);
+        this.user.next(this.userData);
       }
     });
   }
 
-  signIn(email: string, password: string) {
+  async signIn(email: string, password: string) {
     return this.auth
       .signInWithEmailAndPassword(email, password)
       .then((result) => {
+        this.didLoggedIn.next(true);
         this._nav.navigateTo('/');
       })
       .catch((err) => {
@@ -65,20 +57,11 @@ export class AuthService {
       });
   }
 
-  setUserData(user: any, loginMode: 'google-oauth' | 'email-password') {
+  setUserData(user: User) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(
       `users/${user.uid}`
     );
-    const userData: User = {
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-      photoURL: user.photoURL,
-      emailVerified: user.emailVerified,
-      curriculosUID: user.curriculosUID ? user.curriculosUID : null,
-      loginMode: loginMode,
-    };
-    return userRef.set(userData, {
+    return userRef.set(user, {
       merge: true,
     });
   }
@@ -90,7 +73,16 @@ export class AuthService {
         /* Call the SendVerificaitonMail() function when new user sign
         up and returns promise */
         this.sendVerificationMail();
-        this.setUserData(result.user, 'email-password');
+        const user = result.user!;
+        const userAuth: User = {
+          uid: user.uid!,
+          email: user.email!,
+          displayName: user.displayName!,
+          photoURL: user.photoURL!,
+          emailVerified: user.emailVerified!,
+          loginMode: 'email-password',
+        };
+        this.setUserData(userAuth);
       })
       .catch((error) => {
         this._snackBar.open(
@@ -137,11 +129,11 @@ export class AuthService {
     return user.emailVerified !== false ? true : false;
   }
 
-  googleLogin() {
+  async googleLogin() {
     var provider = new auth.GoogleAuthProvider();
     return this.oAuthLogin(provider, 'google-oauth').catch((error: any) => {
       this._snackBar.open(
-        'Algo errado não está certo: login goole falhou',
+        'Algo errado não está certo: login google falhou',
         'fechar'
       );
       console.log('Something went wrong: ', error);
@@ -150,24 +142,27 @@ export class AuthService {
 
   async signOut() {
     return this.auth.signOut().then(() => {
-      this.user = of(null);
       this.userData = null;
-      localStorage.removeItem('user');
+      this.user.next(this.userData);
+      this.didLoggedIn.next(false);
     });
   }
 
-  public deleteUser() {
+  public async deleteUser() {
     if (this.userData) {
       const userDataToDelete = this.userData;
       return this.auth.currentUser
         .then((user) => {
-          user?.delete();
-          this.deleteUserData(userDataToDelete.uid).then((_) => {
-            this.deleteCurriloListData(userDataToDelete.curriculosUID!).then(
-              (_) => {
-              }
-            );
-          });
+          this.deleteCurriloListData(userDataToDelete.curriculosUID!).then(
+            (_) => {
+              this.deleteUserData(userDataToDelete.uid).then((_) => {
+                user?.delete();
+                this.userData = null;
+                this.user.next(this.userData);
+                this.didLoggedIn.next(false);
+              });
+            }
+          );
         })
         .catch((err) => {
           this._nav.navigateTo('/excluir-perfil');
@@ -197,8 +192,44 @@ export class AuthService {
     return this.auth
       .signInWithPopup(provider)
       .then((result) => {
-        this.setUserData(result.user, loginMode);
-        this._nav.navigateTo('/');
+        const user = result.user;
+        let userAuth: User | null = null;
+        if (user) {
+          userAuth = {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            emailVerified: user.emailVerified,
+          };
+        }
+        this.getUserData(userAuth?.uid!).subscribe((doc: any) => {
+          const userStored = doc ? doc.data() : null;
+          let mergedUser: User = {
+            uid: userAuth?.uid!,
+            email: userAuth?.email!,
+            displayName: userAuth?.displayName!,
+            photoURL: userAuth?.photoURL!,
+            emailVerified: userAuth?.emailVerified!,
+            loginMode: 'google-oauth',
+          };
+
+          if (userStored)
+            mergedUser = {
+              uid: userAuth?.uid!,
+              email: userAuth?.email!,
+              displayName: userStored.displayName,
+              photoURL: userStored.photoURL,
+              emailVerified: userAuth!.emailVerified,
+              loginMode: 'google-oauth',
+              curriculosUID: userStored.curriculosUID,
+            };
+          this.setUserData(mergedUser);
+          this.user.next(mergedUser);
+          this.userData = mergedUser;
+          this.didLoggedIn.next(true);
+          this._nav.navigateTo('/');
+        });
       })
       .catch((error) => {
         this._snackBar.open(
@@ -207,5 +238,16 @@ export class AuthService {
         );
         console.log('Something went wrong: ', error);
       });
+  }
+
+  getUserData(uid: string | null) {
+    const userUid = uid ? uid : '';
+    const userRef: AngularFirestoreDocument<any> = this.afs.collection('users').doc(userUid);
+    return userRef.get().pipe(
+      map((userData) => {
+        this.userData = userData.data();
+        this.user.next(this.userData);
+      })
+    );
   }
 }

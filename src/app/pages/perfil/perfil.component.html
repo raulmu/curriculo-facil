@@ -16,8 +16,11 @@
     <li>
       LoginMode: <strong>{{ user.loginMode }}</strong>
     </li>
+    <li>
+      CurriculosUID: <strong>{{ user.curriculosUID }}</strong>
+    </li>
   </ul>
-  <button mat-raised-button routerLink="/excluir-perfil">
+  <button mat-raised-button (click)="confirmarExclusao()">
     Excluir Perfil
   </button>
 </div>
