@@ -1,6 +1,5 @@
 import { _isNumberValue } from '@angular/cdk/coercion';
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   OnInit,
@@ -14,6 +13,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
+import { DateAdapter } from '@angular/material/core';
 import { ActivatedRoute } from '@angular/router';
 import { CepService } from 'src/app/services/cep.service';
 import { Curriculo } from 'src/app/services/curriculo';
@@ -29,10 +29,8 @@ import { v4 as uuidv4 } from 'uuid';
   styleUrls: ['./formulario-curriculo.component.scss'],
 })
 export class FormularioCurriculoComponent implements OnInit {
-  @ViewChild('dataNascimentoInput') dataInput!: ElementRef;
   curriculosList: CurriculoList | undefined = undefined;
   curriculoSelected: Curriculo | undefined = undefined;
-  dataNascimento = new FormControl(new Date(), [Validators.required]);
   uid: string | null = null;
   estadoCivisList = [
     'Solteiro',
@@ -68,12 +66,13 @@ export class FormularioCurriculoComponent implements OnInit {
     identifier: '',
     email: '',
     estado_civil: '',
-  }
+  };
 
-
-
-  curriculoForm = new FormGroup({
-    name: new FormControl(this.fakeData.name, [Validators.required, Validators.maxLength(35)]),
+  public curriculoForm = new FormGroup({
+    name: new FormControl(this.fakeData.name, [
+      Validators.required,
+      Validators.maxLength(35),
+    ]),
     identifier: new FormControl(this.fakeData.identifier, [
       Validators.required,
       Validators.maxLength(25),
@@ -87,7 +86,7 @@ export class FormularioCurriculoComponent implements OnInit {
       Validators.required,
       FormularioCurriculoComponent.checkCategoryInput(this.estadoCivisList),
     ]),
-    data_nascimento: new FormControl('', [
+    data_nascimento: new FormControl(new Date(''), [
       Validators.required,
       FormularioCurriculoComponent.checkIsValidDate(),
     ]),
@@ -136,7 +135,8 @@ export class FormularioCurriculoComponent implements OnInit {
     private route: ActivatedRoute,
     private _nav: NavigateService,
     private cepService: CepService,
-    private progressBarService: ProgressBarService
+    private progressBarService: ProgressBarService,
+    private dateAdapter: DateAdapter<Date>
   ) {
     this.uid = this.route.snapshot.paramMap.get('id');
     this.curriculosService.curriculoList?.subscribe((userCurriculos) => {
@@ -144,19 +144,23 @@ export class FormularioCurriculoComponent implements OnInit {
       this.curriculoSelected = this.curriculosList?.curriculos.filter(
         (el: any) => (el.uid = this.uid)
       )[0];
-      if(this.curriculoSelected) this.preencheValoresIniciais();
+      if (this.curriculoSelected) this.preencheValoresIniciais();
+      this.curriculoForm.markAllAsTouched();
     });
   }
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.dateAdapter.setLocale({pt: 'pt'});
+  }
 
   preencheValoresIniciais() {
-    const dataStr = this.curriculoSelected!.data_nascimento!;
+    let dataStr = this.curriculoSelected!.data_nascimento!;
+    dataStr = dataStr || '';
     let obj: any = {
       name: this.curriculoSelected!.name,
       identifier: this.curriculoSelected!.identifier,
       email: this.curriculoSelected!.email,
+      data_nascimento: new Date(dataStr),
       estado_civil: this.curriculoSelected!.estado_civil,
-      data_nascimento: dataStr,
       nacionalidade: this.curriculoSelected!.nacionalidade,
       telefone: this.curriculoSelected!.telefone,
       whatsapp: this.curriculoSelected!.whatsapp,
@@ -181,18 +185,6 @@ export class FormularioCurriculoComponent implements OnInit {
         if (el.length) this.addCurso(el);
       });
     }
-    const parseData = new Date(dataStr);
-    if (parseData) {
-      this.dataNascimento.setValue(parseData);
-    }
-  }
-
-  changeDatePicker() {
-    const parseData = this.dataNascimento.value!;
-    var pattern = /(\d{2})\/(\d{2})\/(\d{4})/;
-    var dt = this.dataInput.nativeElement.value.replace(pattern, '$2/$1/$3');
-    const dataStr = dt || new Intl.DateTimeFormat('en-US').format(parseData);
-    this.curriculoForm.controls['data_nascimento'].setValue(dataStr);
   }
 
   // https://www.positronx.io/create-angular-firebase-crud-app-with-angular-material/
@@ -226,6 +218,7 @@ export class FormularioCurriculoComponent implements OnInit {
       const curriculo: Curriculo = {
         uid: this.uid!,
         ...this.curriculoForm.getRawValue(),
+        data_nascimento: new Intl.DateTimeFormat('en-US').format(this.curriculoForm.controls['data_nascimento'].value || undefined)
       };
       curriculo.uid = curriculo.uid ? curriculo.uid : uuidv4();
       if (!this.isEditMode()) {
@@ -291,7 +284,9 @@ export class FormularioCurriculoComponent implements OnInit {
 
   addCurso(texto: string) {
     if (this.podeAddCurso())
-      this.cursos.push(new FormControl(texto, [Validators.required, Validators.maxLength(50)]));
+      this.cursos.push(
+        new FormControl(texto, [Validators.required, Validators.maxLength(50)])
+      );
   }
   deleteCurso(index: number) {
     this.cursos.removeAt(index);

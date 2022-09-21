@@ -8,13 +8,7 @@ import { NavigateService } from 'src/app/services/navigate.service';
   styleUrls: ['./inicio.component.scss'],
 })
 export class InicioComponent implements OnInit {
-  constructor(public authService: AuthService, private _nav: NavigateService) {
-    this.authService.auth.authState.subscribe((logado) => {
-      if (logado) {
-        this.authService.getUserData(logado.uid).subscribe();
-      } else this._nav.navigateTo('/login');
-    });
-  }
+  constructor(public authService: AuthService, private _nav: NavigateService) {}
 
   ngOnInit(): void {}
 }

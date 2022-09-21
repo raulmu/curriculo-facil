@@ -12,6 +12,7 @@ export class NavigateService {
   ) {}
 
   navigateTo(url: string) {
+    console.log({url});
     this.router.navigateByUrl(url).then(
       (_) => {
         //works only because we hooked the routeReuseStrategy.shouldReuseRoute above

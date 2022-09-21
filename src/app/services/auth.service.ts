@@ -7,7 +7,16 @@ import {
   AngularFirestoreDocument,
 } from '@angular/fire/compat/firestore';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, map, Observable, of, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  first,
+  firstValueFrom,
+  lastValueFrom,
+  map,
+  Observable,
+  of,
+  tap,
+} from 'rxjs';
 import { NavigateService } from './navigate.service';
 
 @Injectable({
@@ -20,6 +29,7 @@ export class AuthService {
     this.userData
   );
   didLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  private userUID: string = '';
 
   constructor(
     public afs: AngularFirestore, // Inject Firestore service
@@ -28,16 +38,25 @@ export class AuthService {
     private _snackBar: MatSnackBar,
     private _nav: NavigateService
   ) {
-
     this.auth.authState.subscribe((user) => {
       if (user && user.uid) {
-        this.getUserData(user.uid).subscribe((_) => {
-          this.didLoggedIn.next(true);
-        });
+        this.userUID = user.uid;
+        !this.didLoggedIn.value && this.didLoggedIn.next(true);
+        this._nav.navigateTo('/');
       } else {
         this.userData = null;
         this.user.next(this.userData);
+        this.didLoggedIn.value && this.didLoggedIn.next(false);
       }
+    });
+    this.didLoggedIn.subscribe((loggedIn) => {
+      loggedIn &&
+        this.userUID &&
+        !this.userData &&
+        this.getUserData(
+          this.userUID,
+          'didLoggedInSubscribeConstructor'
+        ).subscribe();
     });
   }
 
@@ -45,8 +64,7 @@ export class AuthService {
     return this.auth
       .signInWithEmailAndPassword(email, password)
       .then((result) => {
-        this.didLoggedIn.next(true);
-        this._nav.navigateTo('/');
+        !this.didLoggedIn.value && this.didLoggedIn.next(true);
       })
       .catch((err) => {
         console.log('Something went wrong: ', err.message);
@@ -124,9 +142,16 @@ export class AuthService {
   }
 
   get isLoggedIn(): boolean {
-    const user = this.userData;
-    if (!user) return false;
-    return user.emailVerified !== false ? true : false;
+    const isLoggedIn =
+      !!this.didLoggedIn.value &&
+      !!this.userUID &&
+      !!this.userData &&
+      !!this.userData.emailVerified;
+    console.log(
+      `${isLoggedIn} - ${!!this.didLoggedIn.value} - ${!!this
+        .userUID} - ${!!this.userData} `
+    );
+    return isLoggedIn;
   }
 
   async googleLogin() {
@@ -144,7 +169,7 @@ export class AuthService {
     return this.auth.signOut().then(() => {
       this.userData = null;
       this.user.next(this.userData);
-      this.didLoggedIn.next(false);
+      this.didLoggedIn.value && this.didLoggedIn.next(false);
     });
   }
 
@@ -159,7 +184,7 @@ export class AuthService {
                 user?.delete();
                 this.userData = null;
                 this.user.next(this.userData);
-                this.didLoggedIn.next(false);
+                this.didLoggedIn.value && this.didLoggedIn.next(false);
               });
             }
           );
@@ -203,33 +228,34 @@ export class AuthService {
             emailVerified: user.emailVerified,
           };
         }
-        this.getUserData(userAuth?.uid!).subscribe((doc: any) => {
-          const userStored = doc ? doc.data() : null;
-          let mergedUser: User = {
-            uid: userAuth?.uid!,
-            email: userAuth?.email!,
-            displayName: userAuth?.displayName!,
-            photoURL: userAuth?.photoURL!,
-            emailVerified: userAuth?.emailVerified!,
-            loginMode: 'google-oauth',
-          };
-
-          if (userStored)
-            mergedUser = {
+        this.getUserData(userAuth?.uid!, 'oAuthLogin')
+          .subscribe((doc: any) => {
+            const userStored = doc ? doc.data() : null;
+            let mergedUser: User = {
               uid: userAuth?.uid!,
               email: userAuth?.email!,
-              displayName: userStored.displayName,
-              photoURL: userStored.photoURL,
-              emailVerified: userAuth!.emailVerified,
+              displayName: userAuth?.displayName!,
+              photoURL: userAuth?.photoURL!,
+              emailVerified: userAuth?.emailVerified!,
               loginMode: 'google-oauth',
-              curriculosUID: userStored.curriculosUID,
             };
-          this.setUserData(mergedUser);
-          this.user.next(mergedUser);
-          this.userData = mergedUser;
-          this.didLoggedIn.next(true);
-          this._nav.navigateTo('/');
-        });
+            if (userStored)
+              mergedUser = {
+                uid: userAuth?.uid!,
+                email: userAuth?.email!,
+                displayName: userStored.displayName,
+                photoURL: userStored.photoURL,
+                emailVerified: userAuth!.emailVerified,
+                loginMode: 'google-oauth',
+                curriculosUID: userStored.curriculosUID,
+              };
+            this.setUserData(mergedUser);
+            this.user.next(mergedUser);
+            this.userData = mergedUser;
+            this.didLoggedIn.next(true);
+            this._nav.navigateTo('/');
+          })
+          .unsubscribe();
       })
       .catch((error) => {
         this._snackBar.open(
@@ -240,14 +266,23 @@ export class AuthService {
       });
   }
 
-  getUserData(uid: string | null) {
+  getUserData(uid: string | null, origem: string) {
+    console.log({ uid });
+    console.log({ origem });
     const userUid = uid ? uid : '';
-    const userRef: AngularFirestoreDocument<any> = this.afs.collection('users').doc(userUid);
+    const userRef: AngularFirestoreDocument<any> = this.afs
+      .collection('users')
+      .doc(userUid);
     return userRef.get().pipe(
-      map((userData) => {
+      tap((userData) => {
         this.userData = userData.data();
+        console.log({ 'this.userData': this.userData, origem });
         this.user.next(this.userData);
       })
     );
+  }
+
+  getUser(): Promise<any> {
+    return firstValueFrom(this.auth.authState.pipe(first()));
   }
 }

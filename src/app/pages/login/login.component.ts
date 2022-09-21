@@ -13,15 +13,7 @@ export class LoginComponent implements OnInit {
     private _nav: NavigateService
   ) {}
 
-  ngOnInit(): void {
-    this.authService.didLoggedIn.subscribe((loggedIn) => {
-      console.log({ loggedIn });
-      if (loggedIn) {
-        this.authService.getUserData(this.authService.userData?.uid!).subscribe();
-        this._nav.navigateTo('/');
-      }
-    });
-  }
+  ngOnInit(): void {}
 
   googleLogin() {
     this.authService.googleLogin();

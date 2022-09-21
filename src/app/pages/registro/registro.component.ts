@@ -8,7 +8,8 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class RegistroComponent implements OnInit {
 
-  constructor(public authService: AuthService) { }
+  constructor(public authService: AuthService) {
+  }
 
   ngOnInit(): void {
   }

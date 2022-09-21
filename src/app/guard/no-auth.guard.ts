@@ -14,18 +14,15 @@ import { AuthService } from '../services/auth.service';
 })
 export class NoAuthGuard implements CanActivate {
   constructor(public authService: AuthService, public router: Router) {}
-  canActivate(
+  async canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ):
-    | Observable<boolean | UrlTree>
-    | Promise<boolean | UrlTree>
-    | boolean
-    | UrlTree {
-    const user = this.authService.didLoggedIn.getValue();
+  ): Promise<boolean> {
+    const user = await this.authService.getUser();
+    console.log('NoAuthGuard: ', user);
     if (user) {
       console.log('Acesso negado: NoAuthGuard');
-      this.router.navigateByUrl('');
+      this.router.navigate(['/']);
     }
     return true;
   }

@@ -12,9 +12,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
-import {MatDialogModule} from '@angular/material/dialog';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
@@ -32,15 +32,29 @@ import { PerfilComponent } from './pages/perfil/perfil.component';
 import { RegistroComponent } from './pages/registro/registro.component';
 import { EmailLoginComponent } from './pages/email-login/email-login.component';
 
+import { LOCALE_ID } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
+import localePtExtra from '@angular/common/locales/extra/pt';
+
+registerLocaleData(localePt, 'pt', localePtExtra);
+
 import { AuthService } from './services/auth.service';
 import { PainelComponent } from './pages/painel/painel.component';
 import { EsqueceuSenhaComponent } from './pages/esqueceu-senha/esqueceu-senha.component';
 import { VerificarEmailComponent } from './pages/verificar-email/verificar-email.component';
 import { FormularioCurriculoComponent } from './pages/formulario-curriculo/formulario-curriculo.component';
-import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
+import {
+  DateAdapter,
+  MatNativeDateModule,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+  NativeDateAdapter,
+} from '@angular/material/core';
 import { AdicionaisComponent } from './pages/adicionais/adicionais.component';
 import { ExcluirPerfilComponent } from './pages/excluir-perfil/excluir-perfil.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { CustomDatePickerAdapter, CUSTOM_DATE_FORMATS } from './shared/date-adapter';
 
 @NgModule({
   declarations: [
@@ -83,7 +97,13 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
     AngularFireStorageModule,
     AngularFireDatabaseModule,
   ],
-  providers: [AuthService,{ provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }],
+  providers: [
+    AuthService,
+    { provide: LOCALE_ID, useValue: 'pt' },
+    { provide: MAT_DATE_LOCALE, useValue: 'pt' },
+    {provide: DateAdapter, useClass: CustomDatePickerAdapter},
+    {provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS}
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

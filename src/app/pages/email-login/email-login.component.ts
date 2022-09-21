@@ -10,10 +10,6 @@ import { NavigateService } from 'src/app/services/navigate.service';
 export class EmailLoginComponent implements OnInit {
 
   constructor(public authService: AuthService, private _nav: NavigateService) {
-    this.authService.user.subscribe((user) => {
-      console.log({user});
-      if(user) this._nav.navigateTo('/');
-    });
   }
 
   ngOnInit(): void {}
