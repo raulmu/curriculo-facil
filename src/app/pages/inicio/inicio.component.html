@@ -8,7 +8,7 @@
     <div class="margin-top-10">
       <span>
         Navegar para o:
-        <a (click)="nav.navigateTo('painel')" routerLink="" routerLinkActive="inactive">Seu Painel</a></span
+        <a (click)="nav.navigateTo('painel')" routerLink="">Seu Painel</a></span
       >
     </div>
   </div>
@@ -16,13 +16,13 @@
     <div class="redirectToLogin" *ngIf="!(authService.user | async)">
       <span
         >Já possui um cadastro?
-        <a routerLink="/login" routerLinkActive="active">Faça o Login</a></span
+        <a routerLink="/login">Faça o Login</a></span
       >
     </div>
     <div class="margin-top-10">
       <span>
         Não tem cadastro?
-        <a routerLink="/cadastro" routerLinkActive="active">Crie um</a></span
+        <a routerLink="/cadastro">Crie um</a></span
       >
     </div>
   </ng-template>
