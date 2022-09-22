@@ -1,10 +1,29 @@
 <div class="container">
-  <h2 class="mat-h2">{{ pageTitle() }}</h2>
+  <div class="flex-row">
+    <h2 class="mat-h2">{{ pageTitle() }}</h2>
+    <div>
+      <button
+        (click)="gerarPDF()"
+        mat-icon-button
+        [disabled]="disablePDF()"
+        color="primary"
+      >
+        <mat-icon>picture_as_pdf</mat-icon>
+      </button>
+    </div>
+  </div>
   <form class="my-form" [formGroup]="curriculoForm">
     <mat-form-field class="full-width" appearance="fill">
       <mat-label>Identificador</mat-label>
       <input matInput required formControlName="identifier" />
     </mat-form-field>
+    <div>
+      <mat-checkbox color="primary" formControlName="compartilhar"
+        >Autorizo compartilhar com recrutadores as informações deste
+        currículo</mat-checkbox
+      >
+    </div>
+
     <h3>Dados Pessoais</h3>
     <mat-form-field class="full-width" appearance="fill">
       <mat-label>Nome Completo</mat-label>
@@ -130,11 +149,15 @@
         autocomplete="descricao_escolaridade"
       />
     </mat-form-field>
-
     <div class="flex-row">
       <h3>Cursos</h3>
       <div class="padding-8">
-        <button [disabled]="!podeAddCurso()" (click)="addCurso('')" mat-icon-button color="primary">
+        <button
+          [disabled]="!podeAddCurso()"
+          (click)="addCurso('')"
+          mat-icon-button
+          color="primary"
+        >
           <mat-icon>add_circle</mat-icon>
         </button>
       </div>
@@ -163,13 +186,92 @@
         </div>
       </div>
     </div>
-    <!--div class="flex-row">
-      <mat-form-field class="full-width" appearance="fill">
-        <mat-label>Curso</mat-label>
-        <input #cursoInput matInput autocomplete="curso" />
-      </mat-form-field>
-
-    </div-->
+    <h3>Objetivo</h3>
+    <mat-form-field class="full-width" appearance="fill">
+      <mat-label>Seu objetivo profissional</mat-label>
+      <input
+        matInput
+        required
+        formControlName="objetivo"
+        autocomplete="objetivo"
+      />
+    </mat-form-field>
+    <div class="flex-row">
+      <h3>Experiências Profissionais</h3>
+      <div class="padding-8">
+        <button
+          [disabled]="!podeAddExperiencia()"
+          (click)="addExperiencia()"
+          mat-icon-button
+          color="primary"
+        >
+          <mat-icon>add_circle</mat-icon>
+        </button>
+      </div>
+    </div>
+    <p>
+      Preencha com até 3 empresas nas quais você já trabalhou, escolha as
+      empresas preferencialmente das mais recentes para mais antigas. Caso seja
+      seu primeiro emprego, e você não tenha experiência nenhuma, não adicione
+      nenhuma empresa, e automaticamente será preenchido "EM BUSCA DE MEU
+      PRIMEIRO EMPREGO".
+    </p>
+    <ng-container formArrayName="experiencias">
+      <ng-container
+        *ngFor="let adminForm of experiencias.controls; let i = index"
+      >
+        <div class="flex-row">
+          <h4>Experiência {{i+1}}</h4>
+          <div class="padding-8">
+            <button
+              (click)="deleteExperiencia(i)"
+              mat-icon-button
+              color="primary"
+            >
+              <mat-icon>remove_circle</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div [formGroupName]="i">
+          <mat-form-field class="full-width" appearance="fill">
+            <mat-label>Empresa {{ i + 1 }}</mat-label>
+            <input
+              required
+              formControlName="empresa"
+              matInput
+              autocomplete="empresa_{{ i + 1 }}"
+            />
+          </mat-form-field>
+          <mat-form-field class="full-width" appearance="fill">
+            <mat-label>Período {{ i + 1 }}</mat-label>
+            <input
+              required
+              formControlName="periodo"
+              matInput
+              autocomplete="periodo_{{ i + 1 }}"
+            />
+          </mat-form-field>
+          <mat-form-field class="full-width" appearance="fill">
+            <mat-label>Cargo {{ i + 1 }}</mat-label>
+            <input
+              required
+              formControlName="cargo"
+              matInput
+              autocomplete="cargo_{{ i + 1 }}"
+            />
+          </mat-form-field>
+          <mat-form-field class="full-width" appearance="fill">
+            <mat-label>Atividades Exercidas {{ i + 1 }}</mat-label>
+            <input
+              required
+              formControlName="atividades_exercidas"
+              matInput
+              autocomplete="atividades_exercidas_{{ i + 1 }}"
+            />
+          </mat-form-field>
+        </div>
+      </ng-container>
+    </ng-container>
   </form>
   <!-- Calling SignIn Api from AuthService -->
   <button

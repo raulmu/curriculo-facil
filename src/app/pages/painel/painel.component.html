@@ -17,7 +17,7 @@
         <div class="flex-row align-items-center painel-row">
           <span>{{ curriculo.identifier }}</span>
           <div class="full-width"></div>
-          <button mat-icon-button color="primary" routerLink="/curriculo/{{curriculo.uid}}">
+          <button mat-icon-button color="primary" (click)="nav.navigateTo('/curriculo/'+curriculo.uid)">
             <mat-icon>edit</mat-icon>
           </button>
           <button mat-icon-button color="primary" (click)="confirmarExclusao(curriculo.uid)">

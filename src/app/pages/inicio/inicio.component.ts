@@ -8,7 +8,7 @@ import { NavigateService } from 'src/app/services/navigate.service';
   styleUrls: ['./inicio.component.scss'],
 })
 export class InicioComponent implements OnInit {
-  constructor(public authService: AuthService, private _nav: NavigateService) {}
+  constructor(public authService: AuthService, public nav: NavigateService) {}
 
   ngOnInit(): void {}
 }

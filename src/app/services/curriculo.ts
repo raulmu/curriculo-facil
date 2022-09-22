@@ -1,3 +1,5 @@
+import { Experiencia } from "./experiencia";
+
 export interface Curriculo {
   uid: string;
   identifier: string | null;
@@ -8,6 +10,7 @@ export interface Curriculo {
   nacionalidade: string | null;
   telefone: string | null;
   whatsapp: boolean | null;
+  compartilhar: boolean | null;
   cep: string | null;
   rua: string | null;
   bairro: string | null;
@@ -18,4 +21,6 @@ export interface Curriculo {
   escolaridade: string | null;
   descricao_escolaridade: string | null;
   cursos: string[] | null;
+  objetivo: string | null;
+  experiencias: Experiencia[] | null;
 }

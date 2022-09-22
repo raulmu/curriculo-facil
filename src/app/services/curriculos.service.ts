@@ -31,9 +31,9 @@ export class CurriculosService {
       const curriculosRef: AngularFirestoreDocument<any> = this.afs.doc(
         `curriculos/${userData.uid}`
       );
-      console.log('curriculosService', !userData.curriculosUID);
-      console.log('curriculosService', userData.curriculosUID);
-      console.log('curriculosService', userData);
+      //console.log('curriculosService', !userData.curriculosUID);
+      //console.log('curriculosService', userData.curriculosUID);
+      //console.log('curriculosService', userData);
       const curriculosData: CurriculoList = {
         uid: userData.uid,
         ownerUID: userData.uid,

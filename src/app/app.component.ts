@@ -18,7 +18,7 @@ export class AppComponent {
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
     public authService: AuthService,
-    private _nav: NavigateService,
+    public nav: NavigateService,
     private progressBarService: ProgressBarService
   ) {
     let googleSvg = `${environment.baseHref}/assets/svg/google.svg`;
@@ -30,7 +30,7 @@ export class AppComponent {
 
   logout(){
     this.authService.signOut().then(() => {
-      this._nav.navigateTo('/');
+      this.nav.navigateTo('/');
     });
   }
 }

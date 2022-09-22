@@ -22,14 +22,14 @@ export class PainelComponent implements OnInit, OnDestroy {
   constructor(
     public authService: AuthService,
     public curriculosService: CurriculosService,
-    private _nav: NavigateService,
+    public nav: NavigateService,
     private progressBarService: ProgressBarService,
     private _snackBar: MatSnackBar,
     private dialog: MatDialog
   ) {
     this.subs.add(
       this.curriculosService.curriculoList?.subscribe((userCurriculos) => {
-        console.log('PainelComponentCOnstructor', userCurriculos);
+        //console.log('PainelComponentCOnstructor', userCurriculos);
         this.curriculoList = userCurriculos;
       })
     );
@@ -40,8 +40,8 @@ export class PainelComponent implements OnInit, OnDestroy {
   }
 
   addCurriculo() {
-    if (this.userCurriculos.length) this._nav.navigateTo('adicionais');
-    else this._nav.navigateTo('curriculo');
+    if (this.userCurriculos.length) this.nav.navigateTo('adicionais');
+    else this.nav.navigateTo('curriculo');
   }
 
   ngOnInit(): void {}

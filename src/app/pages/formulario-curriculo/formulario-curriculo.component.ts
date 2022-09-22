@@ -1,10 +1,5 @@
 import { _isNumberValue } from '@angular/cdk/coercion';
-import {
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -19,6 +14,7 @@ import { CepService } from 'src/app/services/cep.service';
 import { Curriculo } from 'src/app/services/curriculo';
 import { CurriculoList } from 'src/app/services/curriculoList';
 import { CurriculosService } from 'src/app/services/curriculos.service';
+import { Experiencia } from 'src/app/services/experiencia';
 import { NavigateService } from 'src/app/services/navigate.service';
 import { ProgressBarService } from 'src/app/services/progress-bar.service';
 import { v4 as uuidv4 } from 'uuid';
@@ -99,6 +95,7 @@ export class FormularioCurriculoComponent implements OnInit {
       Validators.maxLength(16),
     ]),
     whatsapp: new FormControl(false, [Validators.required]),
+    compartilhar: new FormControl(false, [Validators.required]),
     cep: new FormControl('', [
       Validators.required,
       Validators.maxLength(9),
@@ -128,6 +125,11 @@ export class FormularioCurriculoComponent implements OnInit {
       Validators.maxLength(70),
     ]),
     cursos: new FormArray([]),
+    objetivo: new FormControl('', [
+      Validators.required,
+      Validators.maxLength(150),
+    ]),
+    experiencias: new FormArray([]),
   });
 
   constructor(
@@ -149,7 +151,7 @@ export class FormularioCurriculoComponent implements OnInit {
     });
   }
   ngOnInit(): void {
-    this.dateAdapter.setLocale({pt: 'pt'});
+    this.dateAdapter.setLocale({ pt: 'pt' });
   }
 
   preencheValoresIniciais() {
@@ -164,6 +166,7 @@ export class FormularioCurriculoComponent implements OnInit {
       nacionalidade: this.curriculoSelected!.nacionalidade,
       telefone: this.curriculoSelected!.telefone,
       whatsapp: this.curriculoSelected!.whatsapp,
+      compartilhar: this.curriculoSelected!.compartilhar,
       cep: this.curriculoSelected!.cep,
       rua: this.curriculoSelected!.rua,
       bairro: this.curriculoSelected!.bairro,
@@ -173,6 +176,7 @@ export class FormularioCurriculoComponent implements OnInit {
       complemento: this.curriculoSelected!.complemento,
       escolaridade: this.curriculoSelected!.escolaridade,
       descricao_escolaridade: this.curriculoSelected!.descricao_escolaridade,
+      objetivo: this.curriculoSelected!.objetivo,
     };
     Object.keys(obj).forEach((key) => {
       if (obj[key] === undefined) obj[key] = '';
@@ -183,6 +187,13 @@ export class FormularioCurriculoComponent implements OnInit {
     if (cursos?.length) {
       cursos.map((el) => {
         if (el.length) this.addCurso(el);
+      });
+    }
+    const experiencias = this.curriculoSelected!.experiencias;
+    this.curriculoForm.controls['experiencias'] = new FormArray([]);
+    if (experiencias?.length) {
+      experiencias.map((el) => {
+        if (el) this.addExperiencia(el);
       });
     }
   }
@@ -200,10 +211,7 @@ export class FormularioCurriculoComponent implements OnInit {
   public static checkIsValidDate() {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const val = control.value;
-      if (
-        FormularioCurriculoComponent.isValidDate(new Date(val))
-      )
-        return null;
+      if (FormularioCurriculoComponent.isValidDate(new Date(val))) return null;
       return { 'not-valid-date': val };
     };
   }
@@ -215,10 +223,23 @@ export class FormularioCurriculoComponent implements OnInit {
   gravar() {
     this.progressBarService.show.next(true);
     if (this.isFormValid()) {
+      let experiencias: Experiencia[] = [];
+      if (this.experiencias.controls.length) {
+        experiencias = this.experiencias.controls.map((group) => {
+          const experiencia: Experiencia = {
+            ...group.getRawValue(),
+          };
+          return experiencia;
+        });
+      }
+
       const curriculo: Curriculo = {
         uid: this.uid!,
         ...this.curriculoForm.getRawValue(),
-        data_nascimento: new Intl.DateTimeFormat('en-US').format(this.curriculoForm.controls['data_nascimento'].value || undefined)
+        data_nascimento: new Intl.DateTimeFormat('en-US').format(
+          this.curriculoForm.controls['data_nascimento'].value || undefined
+        ),
+        experiencias,
       };
       curriculo.uid = curriculo.uid ? curriculo.uid : uuidv4();
       if (!this.isEditMode()) {
@@ -281,6 +302,9 @@ export class FormularioCurriculoComponent implements OnInit {
   get cursos() {
     return this.curriculoForm.get('cursos') as FormArray;
   }
+  get experiencias() {
+    return this.curriculoForm.get('experiencias') as FormArray;
+  }
 
   addCurso(texto: string) {
     if (this.podeAddCurso())
@@ -288,10 +312,47 @@ export class FormularioCurriculoComponent implements OnInit {
         new FormControl(texto, [Validators.required, Validators.maxLength(50)])
       );
   }
+
+  addExperiencia(experiencia?: Experiencia) {
+    if (this.podeAddExperiencia()) {
+      this.experiencias.push(
+        new FormGroup({
+          empresa: new FormControl(experiencia ? experiencia.empresa : '', [
+            Validators.required,
+            Validators.maxLength(50),
+          ]),
+          periodo: new FormControl(experiencia ? experiencia.periodo : '', [
+            Validators.required,
+            Validators.maxLength(50),
+          ]),
+          cargo: new FormControl(experiencia ? experiencia.cargo : '', [
+            Validators.required,
+            Validators.maxLength(50),
+          ]),
+          atividades_exercidas: new FormControl(
+            experiencia ? experiencia.atividades_exercidas : '',
+            [Validators.required, Validators.maxLength(150)]
+          ),
+        })
+      );
+    }
+  }
   deleteCurso(index: number) {
     this.cursos.removeAt(index);
   }
   podeAddCurso() {
     return this.cursos.length < 3;
+  }
+  podeAddExperiencia() {
+    return this.experiencias.length < 3;
+  }
+  deleteExperiencia(index: number) {
+    this.experiencias.removeAt(index);
+  }
+  gerarPDF() {
+    this._nav.navigateTo('adicionais');
+  }
+  disablePDF() {
+    return false;
   }
 }

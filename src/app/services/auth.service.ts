@@ -267,8 +267,8 @@ export class AuthService {
   }
 
   getUserData(uid: string | null, origem: string) {
-    console.log({ uid });
-    console.log({ origem });
+    //console.log({ uid });
+    //console.log({ origem });
     const userUid = uid ? uid : '';
     const userRef: AngularFirestoreDocument<any> = this.afs
       .collection('users')
@@ -276,7 +276,7 @@ export class AuthService {
     return userRef.get().pipe(
       tap((userData) => {
         this.userData = userData.data();
-        console.log({ 'this.userData': this.userData, origem });
+        //console.log({ 'this.userData': this.userData, origem });
         this.user.next(this.userData);
       })
     );

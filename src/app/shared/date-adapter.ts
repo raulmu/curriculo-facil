@@ -1,6 +1,7 @@
 
 import {DatePipe} from '@angular/common';
 import { NativeDateAdapter } from '@angular/material/core';
+import { Injectable } from '@angular/core';
 
 export interface DateDisplay {
   year: string;
@@ -22,6 +23,9 @@ display: {
 };
 
 // ONLY PT-BR Implemented
+@Injectable({
+  providedIn: 'root'
+})
 export class CustomDatePickerAdapter extends NativeDateAdapter {
   override parse(value: string | number): Date | null {
     console.log({value});

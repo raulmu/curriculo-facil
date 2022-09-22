@@ -14,7 +14,7 @@
     <mat-icon>home</mat-icon>
     <span>Inicial</span>
   </button>
-  <button mat-menu-item routerLink="/painel" *ngIf="(authService.user | async)">
+  <button mat-menu-item (click)="nav.navigateTo('painel')" *ngIf="(authService.user | async)">
     <mat-icon>dashboard</mat-icon>
     <span>Painel</span>
   </button>

@@ -62,3 +62,10 @@ ul {
 .justify-end {
   justify-content: end;
 }
+
+.mat-checkbox-layout {
+  white-space: normal !important;
+}
+.mat-checkbox-inner-container {
+  margin-top: 4px;
+}

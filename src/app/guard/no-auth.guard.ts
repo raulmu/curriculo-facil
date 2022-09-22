@@ -19,7 +19,7 @@ export class NoAuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Promise<boolean> {
     const user = await this.authService.getUser();
-    console.log('NoAuthGuard: ', user);
+    //console.log('NoAuthGuard: ', user);
     if (user) {
       console.log('Acesso negado: NoAuthGuard');
       this.router.navigate(['/']);
