@@ -23,4 +23,5 @@ export interface Curriculo {
   cursos: string[] | null;
   objetivo: string | null;
   experiencias: Experiencia[] | null;
+  fotoDataUrl: string;
 }

@@ -15,6 +15,7 @@ import { Curriculo } from 'src/app/services/curriculo';
 import { CurriculoList } from 'src/app/services/curriculoList';
 import { CurriculosService } from 'src/app/services/curriculos.service';
 import { Experiencia } from 'src/app/services/experiencia';
+import { FotoService } from 'src/app/services/foto.service';
 import { NavigateService } from 'src/app/services/navigate.service';
 import { ProgressBarService } from 'src/app/services/progress-bar.service';
 import { v4 as uuidv4 } from 'uuid';
@@ -28,6 +29,7 @@ export class FormularioCurriculoComponent implements OnInit {
   curriculosList: CurriculoList | undefined = undefined;
   curriculoSelected: Curriculo | undefined = undefined;
   uid: string | null = null;
+  public fotoDataUrl: string = '';
   estadoCivisList = [
     'Solteiro',
     'Solteira',
@@ -138,7 +140,8 @@ export class FormularioCurriculoComponent implements OnInit {
     public _nav: NavigateService,
     private cepService: CepService,
     private progressBarService: ProgressBarService,
-    private dateAdapter: DateAdapter<Date>
+    private dateAdapter: DateAdapter<Date>,
+    private fotoService: FotoService
   ) {
     this.uid = this.route.snapshot.paramMap.get('id');
     this.curriculosService.curriculoList?.subscribe((userCurriculos) => {
@@ -147,6 +150,9 @@ export class FormularioCurriculoComponent implements OnInit {
         (el: any) => (el.uid = this.uid)
       )[0];
       if (this.curriculoSelected) this.preencheValoresIniciais();
+      const fotoDataUrl = `${this.fotoService.dataUrl.getValue()}`;
+      if (fotoDataUrl) this.fotoDataUrl = fotoDataUrl;
+      this.fotoService.dataUrl.next('');
       this.curriculoForm.markAllAsTouched();
     });
   }
@@ -156,6 +162,7 @@ export class FormularioCurriculoComponent implements OnInit {
 
   preencheValoresIniciais() {
     let dataStr = this.curriculoSelected!.data_nascimento!;
+    this.fotoDataUrl = this.curriculoSelected!.fotoDataUrl;
     dataStr = dataStr || '';
     let obj: any = {
       name: this.curriculoSelected!.name,
@@ -240,6 +247,7 @@ export class FormularioCurriculoComponent implements OnInit {
           this.curriculoForm.controls['data_nascimento'].value || undefined
         ),
         experiencias,
+        fotoDataUrl: this.fotoDataUrl,
       };
       curriculo.uid = curriculo.uid ? curriculo.uid : uuidv4();
       if (!this.isEditMode()) {
@@ -356,6 +364,9 @@ export class FormularioCurriculoComponent implements OnInit {
     return false;
   }
   addPhoto() {
-    this._nav.navigateTo(`/upload-foto/${this.uid}`)
+    this._nav.navigateTo(`/upload-foto/${this.uid}`);
+  }
+  delPhoto() {
+    this.fotoDataUrl='';
   }
 }

@@ -10,15 +10,20 @@
       >
         <mat-icon>picture_as_pdf</mat-icon>
       </button>
-      <button
-      (click)="addPhoto()"
-      mat-icon-button
-      color="primary"
-    >
-      <mat-icon>add_a_photo</mat-icon>
-    </button>
+      <button (click)="addPhoto()" mat-icon-button color="primary">
+        <mat-icon>add_a_photo</mat-icon>
+      </button>
     </div>
   </div>
+  <div class="flex-row" *ngIf="fotoDataUrl">
+    <img class="my-picture" [src]="fotoDataUrl" />
+    <div>
+      <button (click)="delPhoto()" mat-icon-button color="primary">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
   <form class="my-form" [formGroup]="curriculoForm">
     <mat-form-field class="full-width" appearance="fill">
       <mat-label>Identificador</mat-label>
@@ -228,7 +233,7 @@
         *ngFor="let adminForm of experiencias.controls; let i = index"
       >
         <div class="flex-row">
-          <h4>Experiência {{i+1}}</h4>
+          <h4>Experiência {{ i + 1 }}</h4>
           <div class="padding-8">
             <button
               (click)="deleteExperiencia(i)"

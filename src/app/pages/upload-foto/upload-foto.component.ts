@@ -4,7 +4,7 @@ import {
   ElementRef,
   OnInit,
   ViewChild,
-  Inject
+  Inject,
 } from '@angular/core';
 import {
   LyImageCropper,
@@ -13,6 +13,9 @@ import {
 } from '@alyle/ui/image-cropper';
 import { StyleRenderer, lyl } from '@alyle/ui';
 import { DOCUMENT } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { NavigateService } from 'src/app/services/navigate.service';
+import { FotoService } from 'src/app/services/foto.service';
 
 const styles = () => {
   return {
@@ -33,7 +36,8 @@ const styles = () => {
   providers: [StyleRenderer],
 })
 export class UploadFotoComponent implements OnInit {
-  window? : (Window & typeof globalThis) | null;
+  uid: string | null;
+  window?: (Window & typeof globalThis) | null;
   classes = this.sRenderer.renderSheet(styles);
   croppedImage?: string;
   ready: boolean = false;
@@ -49,37 +53,48 @@ export class UploadFotoComponent implements OnInit {
     },
   };
 
+  constructor(
+    readonly sRenderer: StyleRenderer,
+    @Inject(DOCUMENT) private _document: Document,
+    private route: ActivatedRoute,
+    private _nav: NavigateService,
+    private fotoService: FotoService
+  ) {
+    this.uid = this.route.snapshot.paramMap.get('uid');
+  }
+
   onCropped(e: ImgCropperEvent) {
     this.croppedImage = e.dataURL;
     this.scrollToTop();
-    console.log(e);
   }
 
   selectInput(e: Event) {
-    console.log('selectInput');
     this.cropper.selectInputEvent(e);
     setTimeout(() => {
       this.cropper.center();
       this.scrollToBottom();
-      console.log('this.cropper.center();');
-    }, 500);
+    }, 600);
   }
-
-  constructor(readonly sRenderer: StyleRenderer, @Inject(DOCUMENT) private _document: Document) {}
 
   ngOnInit(): void {
     this.window = this._document.defaultView;
   }
 
   enviar() {
-    if (this.croppedImage) console.log('enviar', this.croppedImage);
+    if (this.croppedImage)
+      this.fotoService.dataUrl.next(this.croppedImage ? this.croppedImage : '');
+    this.gotoCurriculo();
   }
 
   scrollToBottom() {
-    this.window!.scroll({top: 1000});
+    this.window!.scroll({ top: 9000 });
   }
 
   scrollToTop() {
-    this.window!.scroll({top: 0});
+    this.window!.scroll({ top: 0 });
+  }
+
+  gotoCurriculo() {
+    this._nav.navigateTo(`/curriculo/${this.uid}`);
   }
 }
