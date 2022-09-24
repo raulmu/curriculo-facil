@@ -41,11 +41,11 @@ export class UploadFotoComponent implements OnInit {
   readonly cropper!: LyImageCropper;
   result: string = '';
   myConfig: ImgCropperConfig = {
-    width: 150, // Default `250`
-    height: 150, // Default `200`,
+    width: 250, // Default `250`
+    height: 250, // Default `200`,
     output: {
-      width: 200,
-      height: 200,
+      width: 250,
+      height: 250,
     },
   };
 
