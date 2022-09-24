@@ -1,6 +1,8 @@
 <div class="container">
   <h3 class="mat-h3">Enviar Foto</h3>
-  <div id="cropped-img"><img *ngIf="cropper.isCropped" [src]="croppedImage" /></div>
+  <div id="cropped-img" (click)="!cropper.isCropped && _fileInput.click()"><img *ngIf="cropper.isCropped" [src]="croppedImage" />
+    <span *ngIf="!cropper.isCropped" class="text-center">selecione uma imagem</span>
+  </div>
   <div class="flex-row margin-5">
     <button mat-raised-button color="accent" *ngIf="cropper.isCropped" (click)="enviar()">
       <mat-icon>file_upload</mat-icon>
@@ -65,7 +67,7 @@
       (ready)="ready = true"
       (cleaned)="ready = false"
     >
-      <span>Drag and drop image</span>
+      <span class="text-center">Arraste e solte uma imagem</span>
     </ly-img-cropper>
   </div>
 </div>
