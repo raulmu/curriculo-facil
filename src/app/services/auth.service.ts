@@ -28,7 +28,7 @@ export class AuthService {
   public user: BehaviorSubject<User | null | undefined> = new BehaviorSubject(
     this.userData
   );
-  didLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  didLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private userUID: string = '';
 
   constructor(

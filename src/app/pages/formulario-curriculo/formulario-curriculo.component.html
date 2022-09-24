@@ -1,5 +1,5 @@
 <div class="container">
-  <div class="flex-row">
+  <div class="flex-row my-title">
     <h2 class="mat-h2">{{ pageTitle() }}</h2>
     <div>
       <button
@@ -10,6 +10,13 @@
       >
         <mat-icon>picture_as_pdf</mat-icon>
       </button>
+      <button
+      (click)="addPhoto()"
+      mat-icon-button
+      color="primary"
+    >
+      <mat-icon>add_a_photo</mat-icon>
+    </button>
     </div>
   </div>
   <form class="my-form" [formGroup]="curriculoForm">

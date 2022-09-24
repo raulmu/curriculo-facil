@@ -135,7 +135,7 @@ export class FormularioCurriculoComponent implements OnInit {
   constructor(
     private curriculosService: CurriculosService,
     private route: ActivatedRoute,
-    private _nav: NavigateService,
+    public _nav: NavigateService,
     private cepService: CepService,
     private progressBarService: ProgressBarService,
     private dateAdapter: DateAdapter<Date>
@@ -227,7 +227,7 @@ export class FormularioCurriculoComponent implements OnInit {
       if (this.experiencias.controls.length) {
         experiencias = this.experiencias.controls.map((group) => {
           const experiencia: Experiencia = {
-            ...group.getRawValue(),
+            ...group.value,
           };
           return experiencia;
         });
@@ -354,5 +354,8 @@ export class FormularioCurriculoComponent implements OnInit {
   }
   disablePDF() {
     return false;
+  }
+  addPhoto() {
+    this._nav.navigateTo(`/upload-foto/${this.uid}`)
   }
 }

@@ -55,6 +55,7 @@ import { AdicionaisComponent } from './pages/adicionais/adicionais.component';
 import { ExcluirPerfilComponent } from './pages/excluir-perfil/excluir-perfil.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { CustomDatePickerAdapter, CUSTOM_DATE_FORMATS } from './shared/date-adapter';
+import { UploadFotoComponent } from './pages/upload-foto/upload-foto.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { CustomDatePickerAdapter, CUSTOM_DATE_FORMATS } from './shared/date-adap
     AdicionaisComponent,
     ExcluirPerfilComponent,
     ConfirmDialogComponent,
+    UploadFotoComponent,
   ],
   imports: [
     BrowserModule,

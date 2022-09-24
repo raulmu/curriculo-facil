@@ -12,6 +12,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { PainelComponent } from './pages/painel/painel.component';
 import { PerfilComponent } from './pages/perfil/perfil.component';
 import { RegistroComponent } from './pages/registro/registro.component';
+import { UploadFotoComponent } from './pages/upload-foto/upload-foto.component';
 import { VerificarEmailComponent } from './pages/verificar-email/verificar-email.component';
 
 const routes: Routes = [
@@ -26,7 +27,8 @@ const routes: Routes = [
   { path: 'curriculo', component: FormularioCurriculoComponent, canActivate: [AuthGuard]},
   { path: 'curriculo/:id', component: FormularioCurriculoComponent, canActivate: [AuthGuard]},
   { path: 'adicionais', component: AdicionaisComponent, canActivate: [AuthGuard]},
-  { path: 'excluir-perfil', component: ExcluirPerfilComponent, canActivate: [AuthGuard]}
+  { path: 'excluir-perfil', component: ExcluirPerfilComponent, canActivate: [AuthGuard]},
+  { path: 'upload-foto/:uid', component: UploadFotoComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({
