@@ -55,12 +55,28 @@ ul {
   padding: 8px;
 }
 
+.margin-2 {
+  margin: 2px !important;
+}
+
+.margin-5 {
+  margin: 5px !important;
+}
+
 .margin-top-10 {
   margin-top: 10px;
 }
 
 .justify-end {
   justify-content: end;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
 }
 
 .mat-checkbox-layout {

@@ -22,6 +22,16 @@ import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 
+import { LyImageCropperModule } from '@alyle/ui/image-cropper';
+import {
+  LyTheme2,
+  StyleRenderer,
+  LY_THEME,
+  LY_THEME_NAME,
+  LyCommonModule
+} from '@alyle/ui';
+import { MinimaLight } from '@alyle/ui/themes/minima';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
@@ -56,6 +66,7 @@ import { ExcluirPerfilComponent } from './pages/excluir-perfil/excluir-perfil.co
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { CustomDatePickerAdapter, CUSTOM_DATE_FORMATS } from './shared/date-adapter';
 import { UploadFotoComponent } from './pages/upload-foto/upload-foto.component';
+import { LySliderModule } from '@alyle/ui/slider';
 
 @NgModule({
   declarations: [
@@ -98,13 +109,22 @@ import { UploadFotoComponent } from './pages/upload-foto/upload-foto.component';
     AngularFirestoreModule,
     AngularFireStorageModule,
     AngularFireDatabaseModule,
+    LyImageCropperModule,
+    LySliderModule,
+    LyCommonModule
   ],
   providers: [
     AuthService,
     { provide: LOCALE_ID, useValue: 'pt' },
     { provide: MAT_DATE_LOCALE, useValue: 'pt' },
     {provide: DateAdapter, useClass: CustomDatePickerAdapter},
-    {provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS}
+    {provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS},
+    [ LyTheme2 ],
+    [ StyleRenderer ],
+    // Theme that will be applied to this module
+    { provide: LY_THEME_NAME, useValue: 'minima-light' },
+    { provide: LY_THEME, useClass: MinimaLight, multi: true },
+    
   ],
   bootstrap: [AppComponent],
 })
