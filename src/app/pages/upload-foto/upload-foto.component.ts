@@ -57,7 +57,7 @@ export class UploadFotoComponent implements OnInit {
     readonly sRenderer: StyleRenderer,
     @Inject(DOCUMENT) private _document: Document,
     private route: ActivatedRoute,
-    private _nav: NavigateService,
+    public _nav: NavigateService,
     private fotoService: FotoService
   ) {
     this.uid = this.route.snapshot.paramMap.get('uid');

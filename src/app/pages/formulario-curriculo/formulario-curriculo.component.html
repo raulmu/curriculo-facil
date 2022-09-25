@@ -289,9 +289,25 @@
   <button
     [disabled]="!isFormValid()"
     mat-raised-button
-    color="primary"
+    color="accent"
     (click)="gravar()"
   >
     Salvar
   </button>
+  <div class="my-fab-buttons">
+    <button
+      mat-fab
+      color="accent"
+      (click)="gravar()"
+    >
+      <mat-icon>save</mat-icon>
+    </button>
+    <button
+      mat-fab
+      color="warn"
+      (click)="_nav.back()"
+    >
+      <mat-icon>cancel</mat-icon>
+    </button>
+  </div>
 </div>

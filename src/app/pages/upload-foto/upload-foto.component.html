@@ -1,10 +1,18 @@
 <div class="container">
   <h3 class="mat-h3">Enviar Foto</h3>
-  <div id="cropped-img" (click)="!cropper.isCropped && _fileInput.click()"><img *ngIf="cropper.isCropped" [src]="croppedImage" />
-    <span *ngIf="!cropper.isCropped" class="text-center">selecione uma imagem</span>
+  <div id="cropped-img" (click)="!cropper.isCropped && _fileInput.click()">
+    <img *ngIf="cropper.isCropped" [src]="croppedImage" />
+    <span *ngIf="!cropper.isCropped" class="text-center"
+      >selecione uma imagem</span
+    >
   </div>
   <div class="flex-row margin-5">
-    <button mat-raised-button color="accent" *ngIf="cropper.isCropped" (click)="enviar()">
+    <button
+      mat-raised-button
+      color="accent"
+      *ngIf="cropper.isCropped"
+      (click)="enviar()"
+    >
       <mat-icon>file_upload</mat-icon>
       Enviar
     </button>
@@ -35,26 +43,52 @@
       hidden
     />
 
-    <div *ngIf="cropper.isLoaded"  class="flex-row flex-wrap justify-between">
-      <button class="margin-2" (click)="cropper.zoomIn()" mat-raised-button appearance="icon">
+    <div *ngIf="cropper.isLoaded" class="flex-row flex-wrap justify-between">
+      <button
+        class="margin-2"
+        (click)="cropper.zoomIn()"
+        mat-raised-button
+        appearance="icon"
+      >
         <mat-icon>zoom_in</mat-icon>
       </button>
-      <button class="margin-2" (click)="cropper.zoomOut()" mat-raised-button appearance="icon">
+      <button
+        class="margin-2"
+        (click)="cropper.zoomOut()"
+        mat-raised-button
+        appearance="icon"
+      >
         <mat-icon>zoom_out</mat-icon>
       </button>
-      <button class="margin-2" (click)="cropper.center()" mat-raised-button appearance="icon">
+      <button
+        class="margin-2"
+        (click)="cropper.center()"
+        mat-raised-button
+        appearance="icon"
+      >
         <mat-icon>filter_center_focus</mat-icon>
       </button>
-      <button class="margin-2" (click)="cropper.rotate(-90)" mat-raised-button appearance="icon">
+      <button
+        class="margin-2"
+        (click)="cropper.rotate(-90)"
+        mat-raised-button
+        appearance="icon"
+      >
         <mat-icon>rotate_90_degrees_ccw</mat-icon>
       </button>
       <button class="margin-2" (click)="cropper.fit()" mat-raised-button>
         <mat-icon>unfold_less</mat-icon>
       </button>
-      <button class="margin-2" (click)="cropper.fitToScreen()" mat-raised-button>
+      <button
+        class="margin-2"
+        (click)="cropper.fitToScreen()"
+        mat-raised-button
+      >
         <mat-icon>fit_screen</mat-icon>
       </button>
-      <button class="margin-2" (click)="cropper.setScale(1)" mat-raised-button>1:1</button>
+      <button class="margin-2" (click)="cropper.setScale(1)" mat-raised-button>
+        1:1
+      </button>
       <button class="margin-2" (click)="cropper.clean()" mat-raised-button>
         <mat-icon>undo</mat-icon>
       </button>
@@ -69,5 +103,13 @@
     >
       <span class="text-center">Arraste e solte uma imagem</span>
     </ly-img-cropper>
+  </div>
+  <div class="my-fab-buttons">
+    <button mat-fab color="accent" (click)="enviar()" [disabled]="!cropper.isCropped">
+      <mat-icon>file_upload</mat-icon>
+    </button>
+    <button mat-fab color="warn" (click)="_nav.back()">
+      <mat-icon>cancel</mat-icon>
+    </button>
   </div>
 </div>
