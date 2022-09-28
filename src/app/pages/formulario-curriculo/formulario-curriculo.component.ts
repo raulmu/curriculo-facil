@@ -17,6 +17,7 @@ import { CurriculosService } from 'src/app/services/curriculos.service';
 import { Experiencia } from 'src/app/services/experiencia';
 import { FotoService } from 'src/app/services/foto.service';
 import { NavigateService } from 'src/app/services/navigate.service';
+import { PdfService } from 'src/app/services/pdf.service';
 import { ProgressBarService } from 'src/app/services/progress-bar.service';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -141,7 +142,8 @@ export class FormularioCurriculoComponent implements OnInit {
     private cepService: CepService,
     private progressBarService: ProgressBarService,
     private dateAdapter: DateAdapter<Date>,
-    private fotoService: FotoService
+    private fotoService: FotoService,
+    private pdfService: PdfService
   ) {
     this.uid = this.route.snapshot.paramMap.get('id');
     this.curriculosService.curriculoList?.subscribe((userCurriculos) => {
@@ -227,8 +229,8 @@ export class FormularioCurriculoComponent implements OnInit {
     return d instanceof Date && !isNaN(d.getTime());
   }
 
-  gravar() {
-    this.progressBarService.show.next(true);
+  getCurriculoFromForm() : Curriculo | null  {
+    let curriculo: Curriculo | null = null;
     if (this.isFormValid()) {
       let experiencias: Experiencia[] = [];
       if (this.experiencias.controls.length) {
@@ -239,8 +241,7 @@ export class FormularioCurriculoComponent implements OnInit {
           return experiencia;
         });
       }
-
-      const curriculo: Curriculo = {
+      curriculo = {
         uid: this.uid!,
         ...this.curriculoForm.getRawValue(),
         data_nascimento: new Intl.DateTimeFormat('en-US').format(
@@ -249,7 +250,15 @@ export class FormularioCurriculoComponent implements OnInit {
         experiencias,
         fotoDataUrl: this.fotoDataUrl,
       };
-      curriculo.uid = curriculo.uid ? curriculo.uid : uuidv4();
+      curriculo!.uid = curriculo!.uid ? curriculo!.uid : uuidv4();
+    }
+    return curriculo;
+  }
+
+  gravar() {
+    this.progressBarService.show.next(true);
+    if (this.isFormValid()) {
+      const curriculo = this.getCurriculoFromForm()!;
       if (!this.isEditMode()) {
         this.curriculosList?.curriculos.push(curriculo);
       } else {
@@ -358,10 +367,14 @@ export class FormularioCurriculoComponent implements OnInit {
     this.experiencias.removeAt(index);
   }
   gerarPDF() {
-    this._nav.navigateTo('adicionais');
+    if(!this.disablePDF()) {
+      this.pdfService.curriculo.next(this.getCurriculoFromForm());
+      this._nav.navigateTo('pdf-preview/curriculuid');
+    }
   }
+
   disablePDF() {
-    return false;
+    return !this.uid || !this.isFormValid;
   }
   addPhoto() {
     this._nav.navigateTo(`/upload-foto/${this.uid}`);

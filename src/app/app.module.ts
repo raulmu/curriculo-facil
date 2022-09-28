@@ -67,6 +67,7 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
 import { CustomDatePickerAdapter, CUSTOM_DATE_FORMATS } from './shared/date-adapter';
 import { UploadFotoComponent } from './pages/upload-foto/upload-foto.component';
 import { LySliderModule } from '@alyle/ui/slider';
+import { PdfPreviewComponent } from './pages/pdf-preview/pdf-preview.component';
 
 @NgModule({
   declarations: [
@@ -84,6 +85,7 @@ import { LySliderModule } from '@alyle/ui/slider';
     ExcluirPerfilComponent,
     ConfirmDialogComponent,
     UploadFotoComponent,
+    PdfPreviewComponent,
   ],
   imports: [
     BrowserModule,

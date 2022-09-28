@@ -10,6 +10,7 @@ import { FormularioCurriculoComponent } from './pages/formulario-curriculo/formu
 import { InicioComponent } from './pages/inicio/inicio.component';
 import { LoginComponent } from './pages/login/login.component';
 import { PainelComponent } from './pages/painel/painel.component';
+import { PdfPreviewComponent } from './pages/pdf-preview/pdf-preview.component';
 import { PerfilComponent } from './pages/perfil/perfil.component';
 import { RegistroComponent } from './pages/registro/registro.component';
 import { UploadFotoComponent } from './pages/upload-foto/upload-foto.component';
@@ -28,7 +29,8 @@ const routes: Routes = [
   { path: 'curriculo/:id', component: FormularioCurriculoComponent, canActivate: [AuthGuard]},
   { path: 'adicionais', component: AdicionaisComponent, canActivate: [AuthGuard]},
   { path: 'excluir-perfil', component: ExcluirPerfilComponent, canActivate: [AuthGuard]},
-  { path: 'upload-foto/:uid', component: UploadFotoComponent, canActivate: [AuthGuard]}
+  { path: 'upload-foto/:uid', component: UploadFotoComponent, canActivate: [AuthGuard]},
+  { path: 'pdf-preview/:uid', component: PdfPreviewComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({
