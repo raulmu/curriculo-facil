@@ -3,6 +3,7 @@ import { BehaviorSubject, lastValueFrom, map } from 'rxjs';
 import { Curriculo } from './curriculo';
 import * as fontkit from '@btielen/pdf-lib-fontkit';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 import {
   degrees,
   grayscale,
@@ -47,7 +48,7 @@ export class PdfService implements OnInit {
 
         let fontBytes = await lastValueFrom(
           this.http
-            .get('/assets/font/Hack-Regular.ttf', { responseType: 'blob' })
+            .get(`${environment.baseHref}/assets/font/Hack-Regular.ttf`, { responseType: 'blob' })
             .pipe(
               map((res) => {
                 return res.arrayBuffer();
