@@ -12,20 +12,18 @@ import { PdfService } from 'src/app/services/pdf.service';
   styleUrls: ['./pdf-preview.component.scss'],
 })
 export class PdfPreviewComponent implements OnInit, AfterViewInit {
-  @ViewChild('content')
-  content!: ElementRef;
-
+  pdfSrc: string | undefined;
   constructor(private pdfService: PdfService) {}
-
   ngOnInit() {}
-
-  ngAfterViewInit() {
-    const element = this.content.nativeElement;
+  async ngAfterViewInit() {
+    // element = this.content.nativeElement;
     console.log('Values on ngAfterViewInit():');
-    console.log('content:', element);
+    this.pdfSrc = await this.pdfService.gerarCurriculo();
+    // console.log('content:', element);
+    //const element = document.getElementById('viewer');
   }
 
   async baixarPDF() {
-    await this.pdfService.gerarCurriculo();
+    await this.pdfService.saveByteArray(this.pdfSrc!);
   }
 }

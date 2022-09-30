@@ -26,6 +26,7 @@
     "@btielen/pdf-lib-fontkit": "^1.0.0",
     "firebase": "^9.9.4",
     "hammerjs": "^2.0.8",
+    "ng2-pdf-viewer": "^9.1.2",
     "pdf-lib": "^1.16.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",

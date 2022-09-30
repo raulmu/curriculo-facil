@@ -14,6 +14,7 @@ import {
   rgb,
   StandardFonts,
 } from 'pdf-lib';
+import { resolve } from 'dns';
 
 @Injectable({
   providedIn: 'root',
@@ -26,7 +27,7 @@ export class PdfService implements OnInit {
   constructor(private http: HttpClient) {}
   ngOnInit() {}
 
-  async gerarCurriculo() {
+  async gerarCurriculo(): Promise<string | undefined> {
     const desenharMarcacoes = false;
     const curriculo = this.curriculo.getValue();
     if (curriculo) {
@@ -79,6 +80,7 @@ export class PdfService implements OnInit {
         const textWidth = customFont.widthOfTextAtSize(text, fontSize);
         const textHeight = customFont.heightAtSize(fontSize);
 
+
         const nameY = y10 * 10 + bottom - fontSize * 2;
 
         page.drawText(text, {
@@ -117,19 +119,32 @@ export class PdfService implements OnInit {
 
         const pdfBytes = await this.pdfDoc.save();
 
-        this.saveByteArray('test.pdf', pdfBytes);
+        return new Promise((resolve, reject) => {
+          resolve(this.getPdfURL(pdfBytes));
+        });
+        // this.saveByteArray('test.pdf', this.getPdfURL(pdfBytes));
       }
     }
+    return new Promise((resolve, reject) => {
+      resolve('');
+    });
   }
 
-  saveByteArray(reportName: string, byte: BlobPart) {
+  getPdfURL(byte: BlobPart) {
     var blob = new Blob([byte], { type: 'application/pdf' });
+    return window.URL.createObjectURL(blob);
+  }
+
+  saveByteArray(href: string) {
+    const curriculo = this.curriculo.getValue();
     var link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
-    var fileName = reportName;
+    link.href = href;
+    var fileName = `${curriculo!.identifier?.replace(' ', '_')}.pdf`;
     link.download = fileName;
     link.click();
   }
+
+
 
   desenharMarcacoes(
     page: PDFPage,
@@ -150,7 +165,6 @@ export class PdfService implements OnInit {
         color: rgb(0, 0, 1),
       });
     }
-
     for (let i = 1; i <= 3; i++) {
       page.drawLine({
         start: { x: x4 * i + left, y: top },

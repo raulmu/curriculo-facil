@@ -98,3 +98,12 @@ ul {
 .my-fab-buttons > button {
   margin: 5px 0;
 }
+
+.ng2-pdf-viewer-container {
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}

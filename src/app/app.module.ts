@@ -68,6 +68,7 @@ import { CustomDatePickerAdapter, CUSTOM_DATE_FORMATS } from './shared/date-adap
 import { UploadFotoComponent } from './pages/upload-foto/upload-foto.component';
 import { LySliderModule } from '@alyle/ui/slider';
 import { PdfPreviewComponent } from './pages/pdf-preview/pdf-preview.component';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 @NgModule({
   declarations: [
@@ -113,7 +114,8 @@ import { PdfPreviewComponent } from './pages/pdf-preview/pdf-preview.component';
     AngularFireDatabaseModule,
     LyImageCropperModule,
     LySliderModule,
-    LyCommonModule
+    LyCommonModule,
+    PdfViewerModule
   ],
   providers: [
     AuthService,
