@@ -2,12 +2,19 @@
   <div class="flex-row my-title">
     <h2 class="mat-h2">Geração de Currículo em PDF</h2>
     <div>
-      <button (click)="baixarPDF()" mat-icon-button color="primary" [disabled]="!pdfSrc">
+      <button
+        (click)="baixarPDF()"
+        mat-icon-button
+        color="primary"
+        [disabled]="!pdfSrc"
+      >
         <mat-icon>download</mat-icon>
       </button>
     </div>
   </div>
-  <pdf-viewer class="pdf-viewer" *ngIf="pdfSrc"
+  <pdf-viewer
+    class="pdf-viewer"
+    *ngIf="pdfSrc"
     [src]="pdfSrc"
     [render-text]="true"
     [original-size]="false"
@@ -17,4 +24,7 @@
     [autoresize]="true"
     [zoom-scale]="'page-height'"
   ></pdf-viewer>
+  <div>
+    <a (click)="back()" routerLink="">Voltar</a>
+  </div>
 </div>

@@ -5,6 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
+import { NavigateService } from 'src/app/services/navigate.service';
 import { PdfService } from 'src/app/services/pdf.service';
 
 @Component({
@@ -13,7 +14,7 @@ import { PdfService } from 'src/app/services/pdf.service';
 })
 export class PdfPreviewComponent implements OnInit, AfterViewInit {
   pdfSrc: string | undefined;
-  constructor(private pdfService: PdfService) {}
+  constructor(private pdfService: PdfService, private _nav: NavigateService) {}
   ngOnInit() {}
   async ngAfterViewInit() {
     // element = this.content.nativeElement;
@@ -25,5 +26,9 @@ export class PdfPreviewComponent implements OnInit, AfterViewInit {
 
   async baixarPDF() {
     await this.pdfService.saveByteArray(this.pdfSrc!);
+  }
+
+  back() {
+    this._nav.back();
   }
 }
