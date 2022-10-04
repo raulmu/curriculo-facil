@@ -1,8 +1,18 @@
 <mat-progress-bar mode="query" *ngIf="showProgressBar"></mat-progress-bar>
 <mat-toolbar>
+  <button
+    mat-icon-button
+    (click)="nav.navigateTo('/')"
+  >
+    <mat-icon>article</mat-icon>
+  </button>
   <span>Currículo Fácil</span>
   <div class="full-width"></div>
-  <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+  <button
+    mat-icon-button
+    [matMenuTriggerFor]="menu"
+    aria-label="Example icon-button with a menu"
+  >
     <mat-icon>menu</mat-icon>
   </button>
 </mat-toolbar>
@@ -14,11 +24,15 @@
     <mat-icon>home</mat-icon>
     <span>Inicial</span>
   </button>
-  <button mat-menu-item (click)="nav.navigateTo('painel')" *ngIf="(authService.user | async)">
+  <button
+    mat-menu-item
+    (click)="nav.navigateTo('painel')"
+    *ngIf="authService.user | async"
+  >
     <mat-icon>dashboard</mat-icon>
     <span>Painel</span>
   </button>
-  <button mat-menu-item routerLink="/perfil" *ngIf="(authService.user | async)">
+  <button mat-menu-item routerLink="/perfil" *ngIf="authService.user | async">
     <mat-icon>person</mat-icon>
     <span>Perfil</span>
   </button>
@@ -26,7 +40,7 @@
     <mat-icon>login</mat-icon>
     <span>Entrar</span>
   </button>
-  <button mat-menu-item (click)="logout()" *ngIf="(authService.user | async)">
+  <button mat-menu-item (click)="logout()" *ngIf="authService.user | async">
     <mat-icon>logout</mat-icon>
     <span>Sair</span>
   </button>
