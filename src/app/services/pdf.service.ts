@@ -128,21 +128,22 @@ export class PdfService implements OnInit {
 
         // FOTO
 
-        const imageUint8: Uint8Array = Uint8Array.from(
-          atob(curriculo.fotoDataUrl.replace('data:image/jpeg;base64,', '')),
-          (c) => c.charCodeAt(0)
-        );
-        const jpgImage = await this.pdfDoc.embedJpg(imageUint8.buffer);
-        const jpgDims = jpgImage.scale(0.4);
-        jpgImage &&
-          page.drawImage(jpgImage, {
-            x: x4 * 3 + left + (x4 - jpgDims.width) / 2,
-            y: lastXYI.y - jpgDims.height, // + (y10 - jpgDims.height) / 2,
-            width: jpgDims.width,
-            height: jpgDims.height,
-            opacity: 1,
-          });
-
+        if (curriculo.fotoDataUrl.length) {
+          const imageUint8: Uint8Array = Uint8Array.from(
+            atob(curriculo.fotoDataUrl.replace('data:image/jpeg;base64,', '')),
+            (c) => c.charCodeAt(0)
+          );
+          const jpgImage = await this.pdfDoc.embedJpg(imageUint8.buffer);
+          const jpgDims = jpgImage.scale(0.4);
+          jpgImage &&
+            page.drawImage(jpgImage, {
+              x: x4 * 3 + left + (x4 - jpgDims.width) / 2,
+              y: lastXYI.y - jpgDims.height, // + (y10 - jpgDims.height) / 2,
+              width: jpgDims.width,
+              height: jpgDims.height,
+              opacity: 1,
+            });
+        }
         // GRUPO DADOS PESSOAIS
         const alturaH2 = 16;
         // ALTURA ONDE INICIA O CONTEUDO DO GRUPO
@@ -407,7 +408,7 @@ export class PdfService implements OnInit {
         );
 
         // DESENHA HEADER CURSOS
-        if(curriculo.cursos?.length) {
+        if (curriculo.cursos?.length) {
           lastXYI = this.desenharHeader(
             page,
             'CURSOS',
@@ -424,7 +425,7 @@ export class PdfService implements OnInit {
             h2FontSize,
             fontRegular
           );
-          
+
           let cursos = curriculo.cursos.map((curso) => {
             let linhas = this.quebrarLinhas(
               `- ${curso}`,
@@ -436,7 +437,7 @@ export class PdfService implements OnInit {
               return { line: `${linha}` };
             });
             return linhas;
-          })
+          });
 
           linhas = cursos.reduce((acc, cur) => acc.concat(cur));
 
@@ -453,10 +454,9 @@ export class PdfService implements OnInit {
             linhas,
             1
           );
-
         }
-        
-        if(curriculo.experiencias?.length) {
+
+        if (curriculo.experiencias?.length) {
           lastXYI = this.desenharHeader(
             page,
             'EXPERIÊNCIAS PROFISSIONAIS',
@@ -474,7 +474,7 @@ export class PdfService implements OnInit {
             fontRegular
           );
           const arrays = curriculo.experiencias.map((exp) => {
-            let retorno: {line: string}[] = [];
+            let retorno: { line: string }[] = [];
             let linhas = this.quebrarLinhas(
               `- Empresa: ${exp.empresa}`,
               maxWidth,
@@ -485,7 +485,7 @@ export class PdfService implements OnInit {
               return { line: `${linha}` };
             });
             retorno = retorno.concat(linhas);
-            
+
             linhas = this.quebrarLinhas(
               `- Período: ${exp.periodo}`,
               maxWidth,
@@ -518,7 +518,7 @@ export class PdfService implements OnInit {
               return { line: `${linha}` };
             });
             retorno = retorno.concat(linhas);
-            retorno.push({line:''});
+            retorno.push({ line: '' });
             return retorno;
           });
 
@@ -537,9 +537,8 @@ export class PdfService implements OnInit {
             linhas,
             1
           );
-
         }
-        
+
         // GENERATE
 
         const pdfBytes = await this.pdfDoc.save();
@@ -720,8 +719,8 @@ export class PdfService implements OnInit {
     let retX = itemLabelX + itemLabelWidth;
     let retY = itemY;
     let retI = linhaIndex;
-    
-    if(itemLabel.length) {
+
+    if (itemLabel.length) {
       page.drawText(itemLabel, {
         x: itemLabelX,
         y: itemY,
@@ -730,24 +729,26 @@ export class PdfService implements OnInit {
         color: rgb(0, 0, 0),
       });
     }
-    
 
     let valuesIndex = 0;
     values.forEach((linha) => {
       let fontSizeUsed = fontSize;
-      if(!linha.line.length) {
+      if (!linha.line.length) {
         fontSizeUsed = 3;
       }
-      if(!valuesIndex){
-        itemY = grupoY - (fontSizeUsed + marginY) * (linhaIndex);
+      if (!valuesIndex) {
+        itemY = grupoY - (fontSizeUsed + marginY) * linhaIndex;
       } else {
-        itemY -= (fontSizeUsed + marginY)
+        itemY -= fontSizeUsed + marginY;
       }
 
       retY = itemY;
       retI = linhaIndex + valuesIndex + 1;
       const itemValueLn = linha.line;
-      const itemValueWidth = valueFont.widthOfTextAtSize(itemValueLn, fontSizeUsed);
+      const itemValueWidth = valueFont.widthOfTextAtSize(
+        itemValueLn,
+        fontSizeUsed
+      );
       page.drawText(itemValueLn, {
         x: itemLabelX + itemLabelWidth,
         y: itemY,
