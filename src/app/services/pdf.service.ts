@@ -11,8 +11,10 @@ import {
   PDFDocument,
   PDFFont,
   PDFPage,
+  RGB,
   rgb,
   StandardFonts,
+  Color,
 } from 'pdf-lib';
 import { resolve } from 'dns';
 import { Interpolation } from '@angular/compiler';
@@ -38,7 +40,7 @@ export class PdfService implements OnInit {
         const page = this.pdfDoc.addPage(PageSizes.A4);
         const { width, height } = page.getSize();
         const marginX = 0.07;
-        const marginY = 0.07;
+        const marginY = 0.06;
         const bottom = height * marginY;
         const top = height - bottom;
         const left = width * marginX;
@@ -49,12 +51,14 @@ export class PdfService implements OnInit {
         const yCenter = (bottom + top) / 2;
         const divisoesY = 10;
         const y10 = (top - bottom) / divisoesY;
-        const h1FontSize = 16;
-        const h2FontSize = 13;
+        const h1FontSize = 15;
+        const h2FontSize = 12;
         const bodyFontSize = 11;
         const margin10 = 10;
         const margin2 = 2;
+        const margin1 = 1;
         const margin5 = 5;
+        const margin3 = 3;
         let lastXYI = {
           x: left,
           y: top,
@@ -110,7 +114,7 @@ export class PdfService implements OnInit {
         // NOME
         const headerTxt = curriculo.name!;
         const headerWidth = fontBold.widthOfTextAtSize(headerTxt, h1FontSize);
-        const headerTxtY = y10 * divisoesY + bottom - h1FontSize * 2;
+        const headerTxtY = top - 30;
 
         page.drawText(headerTxt, {
           x: xCenter - headerWidth / 2, // centered
@@ -120,6 +124,8 @@ export class PdfService implements OnInit {
           color: rgb(0, 0, 0),
         });
 
+        lastXYI.y = headerTxtY - margin10 - h1FontSize;
+
         // FOTO
 
         const imageUint8: Uint8Array = Uint8Array.from(
@@ -128,40 +134,38 @@ export class PdfService implements OnInit {
         );
         const jpgImage = await this.pdfDoc.embedJpg(imageUint8.buffer);
         const jpgDims = jpgImage.scale(0.4);
-        page.drawImage(jpgImage, {
-          x: x4 * 3 + left + (x4 - jpgDims.width) / 2,
-          y: y10 * (divisoesY - 2) + bottom + (y10 - jpgDims.height), // + (y10 - jpgDims.height) / 2,
-          width: jpgDims.width,
-          height: jpgDims.height,
-          opacity: 1,
-        });
+        jpgImage &&
+          page.drawImage(jpgImage, {
+            x: x4 * 3 + left + (x4 - jpgDims.width) / 2,
+            y: lastXYI.y - jpgDims.height, // + (y10 - jpgDims.height) / 2,
+            width: jpgDims.width,
+            height: jpgDims.height,
+            opacity: 1,
+          });
 
         // GRUPO DADOS PESSOAIS
-        const alturaH2 = 20;
-        const linhaGrid = 2;
+        const alturaH2 = 16;
         // ALTURA ONDE INICIA O CONTEUDO DO GRUPO
-        let grupoY = y10 * (divisoesY - (linhaGrid - 1)) + bottom - alturaH2;
+        //let grupoY = y10 * (divisoesY - (linhaGrid - 1)) + bottom - alturaH2;
 
         // DESENHA HEADER
-        page.drawRectangle({
-          x: left,
-          y: y10 * (divisoesY - 1) + bottom,
-          width: x4 * (divisoesX - 1),
-          height: -alturaH2,
-          borderWidth: 0.3,
-          borderColor: rgb(0, 0, 0),
-          opacity: 0,
-        });
 
-        const h2DadosPessoais = 'DADOS PESSOAIS';
-
-        page.drawText(h2DadosPessoais, {
-          x: left + margin10,
-          y: y10 * (divisoesY - 1) + bottom - h2FontSize - 2,
-          size: h2FontSize,
-          font: fontRegular,
-          color: rgb(0, 0, 0),
-        });
+        lastXYI = this.desenharHeader(
+          page,
+          'DADOS PESSOAIS',
+          left,
+          lastXYI.y,
+          x4 * (divisoesX - 1),
+          alturaH2,
+          0.3,
+          rgb(0, 0, 0),
+          0,
+          rgb(0, 0, 0),
+          rgb(1, 1, 1),
+          margin10,
+          h2FontSize,
+          fontRegular
+        );
 
         // ENDERECO
 
@@ -173,14 +177,16 @@ export class PdfService implements OnInit {
         }`;
         enderecoValueLn2 = enderecoValueLn2.replaceAll(' -  - ', '');
 
-        lastXYI = this.printItem(
+        let grupoY = lastXYI.y;
+
+        lastXYI = this.desenharItem(
           page,
           fontBold,
           fontRegular,
           bodyFontSize,
           margin10,
-          margin5,
-          grupoY,
+          margin3,
+          lastXYI.y,
           left,
           'Endereço: ',
           [
@@ -193,13 +199,13 @@ export class PdfService implements OnInit {
         );
 
         //  Telefone
-        lastXYI = this.printItem(
+        lastXYI = this.desenharItem(
           page,
           fontBold,
           fontRegular,
           bodyFontSize,
           margin10,
-          margin5,
+          margin3,
           grupoY,
           left,
           'Telefone: ',
@@ -232,13 +238,13 @@ export class PdfService implements OnInit {
         }
 
         // email
-        lastXYI = this.printItem(
+        lastXYI = this.desenharItem(
           page,
           fontBold,
           fontRegular,
           bodyFontSize,
           margin10,
-          margin5,
+          margin3,
           grupoY,
           left,
           'Email: ',
@@ -247,13 +253,13 @@ export class PdfService implements OnInit {
         );
 
         // Estado Civil
-        lastXYI = this.printItem(
+        lastXYI = this.desenharItem(
           page,
           fontBold,
           fontRegular,
           bodyFontSize,
           margin10,
-          margin5,
+          margin3,
           grupoY,
           left,
           'Estado Civil: ',
@@ -264,13 +270,13 @@ export class PdfService implements OnInit {
         // Data de Nascimento
         const dateValue = new Date(curriculo.data_nascimento!);
         const dateStr = new Intl.DateTimeFormat('pt-BR').format(dateValue);
-        lastXYI = this.printItem(
+        lastXYI = this.desenharItem(
           page,
           fontBold,
           fontRegular,
           bodyFontSize,
           margin10,
-          margin5,
+          margin3,
           grupoY,
           left,
           'Data de Nascimento: ',
@@ -280,13 +286,13 @@ export class PdfService implements OnInit {
 
         // Idade
         const idade = this.idade(dateValue, new Date());
-        lastXYI = this.printItem(
+        lastXYI = this.desenharItem(
           page,
           fontBold,
           fontRegular,
           bodyFontSize,
           margin10,
-          margin5,
+          margin3,
           grupoY,
           left,
           'Idade: ',
@@ -295,13 +301,13 @@ export class PdfService implements OnInit {
         );
 
         // Nacionalidade
-        lastXYI = this.printItem(
+        lastXYI = this.desenharItem(
           page,
           fontBold,
           fontRegular,
           bodyFontSize,
           margin10,
-          margin5,
+          margin3,
           grupoY,
           left,
           'Nacionalidade: ',
@@ -310,32 +316,29 @@ export class PdfService implements OnInit {
         );
 
         // DESENHA HEADER OBJETIVO
-        page.drawRectangle({
-          x: left,
-          y: lastXYI.y - margin10,
-          width: x4 * divisoesX,
-          height: -alturaH2,
-          borderWidth: 0.3,
-          borderColor: rgb(0, 0, 0),
-          opacity: 0,
-        });
-
-        const h2Objetivo = 'OBJETIVO';
-
-        page.drawText(h2Objetivo, {
-          x: left + margin10,
-          y: lastXYI.y - margin10 - h2FontSize - 2,
-          size: h2FontSize,
-          font: fontRegular,
-          color: rgb(0, 0, 0),
-        });
-
-        // ALTURA ONDE INICIA O CONTEUDO DO GRUPO
-        grupoY = lastXYI.y - margin10 - alturaH2;
         let maxWidth = x4 * divisoesX;
 
+        lastXYI = this.desenharHeader(
+          page,
+          'OBJETIVO',
+          left,
+          lastXYI.y - margin10,
+          maxWidth,
+          alturaH2,
+          0.3,
+          rgb(0, 0, 0),
+          0,
+          rgb(0, 0, 0),
+          rgb(1, 1, 1),
+          margin10,
+          h2FontSize,
+          fontRegular
+        );
+
+        // ALTURA ONDE INICIA O CONTEUDO DO GRUPO
+
         // quebrar linhas do objetivo se necessário
-        const linhas = this.quebrarLinhas(
+        let linhas = this.quebrarLinhas(
           curriculo.objetivo!,
           maxWidth,
           margin5,
@@ -345,62 +348,198 @@ export class PdfService implements OnInit {
           return { line: `${linha}` };
         });
 
-        lastXYI = this.printItem(
+        lastXYI = this.desenharItem(
           page,
           fontBold,
           fontRegular,
           bodyFontSize,
           margin10,
-          margin5,
-          grupoY,
+          margin3,
+          lastXYI.y,
           left,
           '',
           linhas,
           1
         );
 
-        // DESENHA HEADER OBJETIVO
-        page.drawRectangle({
-          x: left,
-          y: lastXYI.y - margin10,
-          width: x4 * divisoesX,
-          height: -alturaH2,
-          borderWidth: 0.3,
-          borderColor: rgb(0, 0, 0),
-          opacity: 0,
-        });
+        // DESENHA HEADER ESCOLARIDADE
 
-        let h2 = 'ESCOLARIDADE';
-
-        page.drawText(h2, {
-          x: left + margin10,
-          y: lastXYI.y - margin10 - h2FontSize - 2,
-          size: h2FontSize,
-          font: fontRegular,
-          color: rgb(0, 0, 0),
-        });
+        lastXYI = this.desenharHeader(
+          page,
+          'ESCOLARIDADE',
+          left,
+          lastXYI.y - margin10,
+          maxWidth,
+          alturaH2,
+          0.3,
+          rgb(0, 0, 0),
+          0,
+          rgb(0, 0, 0),
+          rgb(1, 1, 1),
+          margin10,
+          h2FontSize,
+          fontRegular
+        );
 
         let escolaridade = `${curriculo.escolaridade!} - ${curriculo.descricao_escolaridade!}`;
-        grupoY = lastXYI.y - margin10 - alturaH2;
+        linhas = this.quebrarLinhas(
+          escolaridade,
+          maxWidth,
+          margin5,
+          fontRegular,
+          bodyFontSize
+        ).map((linha) => {
+          return { line: `${linha}` };
+        });
 
-        lastXYI = this.printItem(
+        lastXYI = this.desenharItem(
           page,
           fontBold,
           fontRegular,
           bodyFontSize,
           margin10,
-          margin5,
-          grupoY,
+          margin3,
+          lastXYI.y,
           left,
           '',
-          [
-            {
-              line: escolaridade,
-            }
-          ],
+          linhas,
           1
         );
 
+        // DESENHA HEADER CURSOS
+        if(curriculo.cursos?.length) {
+          lastXYI = this.desenharHeader(
+            page,
+            'CURSOS',
+            left,
+            lastXYI.y - margin10,
+            maxWidth,
+            alturaH2,
+            0.3,
+            rgb(0, 0, 0),
+            0,
+            rgb(0, 0, 0),
+            rgb(1, 1, 1),
+            margin10,
+            h2FontSize,
+            fontRegular
+          );
+          
+          let cursos = curriculo.cursos.map((curso) => {
+            let linhas = this.quebrarLinhas(
+              `- ${curso}`,
+              maxWidth,
+              margin5,
+              fontRegular,
+              bodyFontSize
+            ).map((linha) => {
+              return { line: `${linha}` };
+            });
+            return linhas;
+          })
+
+          linhas = cursos.reduce((acc, cur) => acc.concat(cur));
+
+          lastXYI = this.desenharItem(
+            page,
+            fontBold,
+            fontRegular,
+            bodyFontSize,
+            margin10,
+            margin3,
+            lastXYI.y,
+            left,
+            '',
+            linhas,
+            1
+          );
+
+        }
+        
+        if(curriculo.experiencias?.length) {
+          lastXYI = this.desenharHeader(
+            page,
+            'EXPERIÊNCIAS PROFISSIONAIS',
+            left,
+            lastXYI.y - margin10,
+            maxWidth,
+            alturaH2,
+            0.3,
+            rgb(0, 0, 0),
+            0,
+            rgb(0, 0, 0),
+            rgb(1, 1, 1),
+            margin10,
+            h2FontSize,
+            fontRegular
+          );
+          const arrays = curriculo.experiencias.map((exp) => {
+            let retorno: {line: string}[] = [];
+            let linhas = this.quebrarLinhas(
+              `- Empresa: ${exp.empresa}`,
+              maxWidth,
+              margin5,
+              fontRegular,
+              bodyFontSize
+            ).map((linha) => {
+              return { line: `${linha}` };
+            });
+            retorno = retorno.concat(linhas);
+            
+            linhas = this.quebrarLinhas(
+              `- Período: ${exp.periodo}`,
+              maxWidth,
+              margin5,
+              fontRegular,
+              bodyFontSize
+            ).map((linha) => {
+              return { line: `${linha}` };
+            });
+            retorno = retorno.concat(linhas);
+
+            linhas = this.quebrarLinhas(
+              `- Cargo: ${exp.cargo}`,
+              maxWidth,
+              margin5,
+              fontRegular,
+              bodyFontSize
+            ).map((linha) => {
+              return { line: `${linha}` };
+            });
+            retorno = retorno.concat(linhas);
+
+            linhas = this.quebrarLinhas(
+              `- Atividades Exercidas: ${exp.atividades_exercidas}`,
+              maxWidth,
+              margin5,
+              fontRegular,
+              bodyFontSize
+            ).map((linha) => {
+              return { line: `${linha}` };
+            });
+            retorno = retorno.concat(linhas);
+            retorno.push({line:''});
+            return retorno;
+          });
+
+          linhas = arrays.reduce((acc, cur) => acc.concat(cur));
+
+          lastXYI = this.desenharItem(
+            page,
+            fontBold,
+            fontRegular,
+            bodyFontSize,
+            margin10,
+            margin3,
+            lastXYI.y,
+            left,
+            '',
+            linhas,
+            1
+          );
+
+        }
+        
         // GENERATE
 
         const pdfBytes = await this.pdfDoc.save();
@@ -520,7 +659,48 @@ export class PdfService implements OnInit {
     });
   }
 
-  printItem(
+  desenharHeader(
+    page: PDFPage,
+    texto: string,
+    x: number,
+    y: number,
+    width: number,
+    alturaH2: number,
+    borderWidth: number,
+    borderColor: Color,
+    opacity: number,
+    color: Color,
+    bgColor: Color,
+    margin: number,
+    fontSize: number,
+    font: PDFFont
+  ): { x: number; y: number; i: number } {
+    // DESENHA HEADER
+    page.drawRectangle({
+      color: bgColor,
+      x: x,
+      y: y,
+      width,
+      height: -alturaH2,
+      borderWidth,
+      borderColor,
+      opacity,
+    });
+
+    const h2Text = texto;
+
+    page.drawText(h2Text, {
+      x: x + margin,
+      y: y - fontSize,
+      size: fontSize,
+      font,
+      color,
+    });
+
+    return { x: x + width, y: y - alturaH2, i: 1 };
+  }
+
+  desenharItem(
     page: PDFPage,
     labelFont: PDFFont,
     valueFont: PDFFont,
@@ -540,25 +720,38 @@ export class PdfService implements OnInit {
     let retX = itemLabelX + itemLabelWidth;
     let retY = itemY;
     let retI = linhaIndex;
-    page.drawText(itemLabel, {
-      x: itemLabelX,
-      y: itemY,
-      size: fontSize,
-      font: labelFont,
-      color: rgb(0, 0, 0),
-    });
+    
+    if(itemLabel.length) {
+      page.drawText(itemLabel, {
+        x: itemLabelX,
+        y: itemY,
+        size: fontSize,
+        font: labelFont,
+        color: rgb(0, 0, 0),
+      });
+    }
+    
 
     let valuesIndex = 0;
     values.forEach((linha) => {
-      itemY = grupoY - (fontSize + marginY) * (linhaIndex + valuesIndex);
+      let fontSizeUsed = fontSize;
+      if(!linha.line.length) {
+        fontSizeUsed = 3;
+      }
+      if(!valuesIndex){
+        itemY = grupoY - (fontSizeUsed + marginY) * (linhaIndex);
+      } else {
+        itemY -= (fontSizeUsed + marginY)
+      }
+
       retY = itemY;
       retI = linhaIndex + valuesIndex + 1;
       const itemValueLn = linha.line;
-      const itemValueWidth = valueFont.widthOfTextAtSize(itemValueLn, fontSize);
+      const itemValueWidth = valueFont.widthOfTextAtSize(itemValueLn, fontSizeUsed);
       page.drawText(itemValueLn, {
         x: itemLabelX + itemLabelWidth,
         y: itemY,
-        size: fontSize,
+        size: fontSizeUsed,
         font: valueFont,
         color: rgb(0, 0, 0),
       });
