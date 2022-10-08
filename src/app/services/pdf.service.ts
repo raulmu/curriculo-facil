@@ -18,6 +18,7 @@ import {
 } from 'pdf-lib';
 import { resolve } from 'dns';
 import { Interpolation } from '@angular/compiler';
+import { AssetsService } from './assets.service';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +28,7 @@ export class PdfService implements OnInit {
     new BehaviorSubject<Curriculo | null>(null);
   modelo: Number = 1;
   pdfDoc: PDFDocument | null = null;
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private assets: AssetsService) {}
   ngOnInit() {}
 
   async gerarCurriculo(): Promise<string | undefined> {
@@ -69,7 +70,7 @@ export class PdfService implements OnInit {
 
         let hackBytes = await lastValueFrom(
           this.http
-            .get(`${environment.baseHref}/assets/font/Hack-Regular.ttf`, {
+            .get(this.assets.getUrl('/assets/font/Hack-Regular.ttf'), {
               responseType: 'blob',
             })
             .pipe(
@@ -81,7 +82,7 @@ export class PdfService implements OnInit {
 
         let hackBoldBytes = await lastValueFrom(
           this.http
-            .get(`${environment.baseHref}/assets/font/Hack-Bold.ttf`, {
+            .get(this.assets.getUrl('/assets/font/Hack-Bold.ttf'), {
               responseType: 'blob',
             })
             .pipe(
@@ -218,7 +219,7 @@ export class PdfService implements OnInit {
         if (curriculo.telefone && curriculo.whatsapp) {
           let zapBytes = await lastValueFrom(
             this.http
-              .get(`${environment.baseHref}/assets/img/zap.png`, {
+              .get(this.assets.getUrl('/assets/img/zap.png'), {
                 responseType: 'blob',
               })
               .pipe(

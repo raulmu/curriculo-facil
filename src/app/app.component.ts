@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { environment } from '../environments/environment';
+import { AssetsService } from './services/assets.service';
 import { AuthService } from './services/auth.service';
 import { NavigateService } from './services/navigate.service';
 import { ProgressBarService } from './services/progress-bar.service';
@@ -19,9 +20,10 @@ export class AppComponent {
     private domSanitizer: DomSanitizer,
     public authService: AuthService,
     public nav: NavigateService,
+    private assets: AssetsService,
     private progressBarService: ProgressBarService
   ) {
-    let googleSvg = `${environment.baseHref}/assets/svg/google.svg`;
+    let googleSvg = this.assets.getUrl('/assets/svg/google.svg');
     this.matIconRegistry.addSvgIcon('google_logo', this.domSanitizer.bypassSecurityTrustResourceUrl(googleSvg));
     this.progressBarService.show.subscribe((value) => {
       this.showProgressBar = value;
@@ -37,3 +39,4 @@ export class AppComponent {
 
 
 // site alsoasked
+// Imagens por <a href="https://pixabay.com/pt//?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4568761">Pixabay</a>

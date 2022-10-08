@@ -15,6 +15,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatCardModule } from '@angular/material/card';
 
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
@@ -28,7 +29,7 @@ import {
   StyleRenderer,
   LY_THEME,
   LY_THEME_NAME,
-  LyCommonModule
+  LyCommonModule,
 } from '@alyle/ui';
 import { MinimaLight } from '@alyle/ui/themes/minima';
 
@@ -64,7 +65,10 @@ import {
 import { AdicionaisComponent } from './pages/adicionais/adicionais.component';
 import { ExcluirPerfilComponent } from './pages/excluir-perfil/excluir-perfil.component';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
-import { CustomDatePickerAdapter, CUSTOM_DATE_FORMATS } from './shared/date-adapter';
+import {
+  CustomDatePickerAdapter,
+  CUSTOM_DATE_FORMATS,
+} from './shared/date-adapter';
 import { UploadFotoComponent } from './pages/upload-foto/upload-foto.component';
 import { LySliderModule } from '@alyle/ui/slider';
 import { PdfPreviewComponent } from './pages/pdf-preview/pdf-preview.component';
@@ -107,6 +111,7 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
     ReactiveFormsModule,
     MatProgressBarModule,
     MatDialogModule,
+    MatCardModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     AngularFirestoreModule,
@@ -115,20 +120,19 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
     LyImageCropperModule,
     LySliderModule,
     LyCommonModule,
-    PdfViewerModule
+    PdfViewerModule,
   ],
   providers: [
     AuthService,
     { provide: LOCALE_ID, useValue: 'pt' },
     { provide: MAT_DATE_LOCALE, useValue: 'pt' },
-    {provide: DateAdapter, useClass: CustomDatePickerAdapter},
-    {provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS},
-    [ LyTheme2 ],
-    [ StyleRenderer ],
+    { provide: DateAdapter, useClass: CustomDatePickerAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS },
+    [LyTheme2],
+    [StyleRenderer],
     // Theme that will be applied to this module
     { provide: LY_THEME_NAME, useValue: 'minima-light' },
     { provide: LY_THEME, useClass: MinimaLight, multi: true },
-    
   ],
   bootstrap: [AppComponent],
 })
