@@ -13,7 +13,6 @@ import { ProgressBarService } from './services/progress-bar.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'curriculo-facil';
   showProgressBar = false;
   constructor(
     private matIconRegistry: MatIconRegistry,
