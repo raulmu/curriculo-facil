@@ -39,3 +39,5 @@ export class AppComponent {
 
 // site alsoasked
 // Imagens por <a href="https://pixabay.com/pt//?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=image&amp;utm_content=4568761">Pixabay</a>
+// https://alsoasked.com/search?term=curr%C3%ADculo&language=pt&region=br&depth=2&search_id=nbqwmg9JGyo2BPx1DdopY8re1v3l6xKD&new_search=true&user_level=guest
+

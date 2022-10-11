@@ -152,9 +152,9 @@ export class FormularioCurriculoComponent implements OnInit {
         (el: any) => (el.uid = this.uid)
       )[0];
       if (this.curriculoSelected) this.preencheValoresIniciais();
-      const fotoDataUrl = `${this.fotoService.dataUrl.getValue()}`;
-      if (fotoDataUrl) this.fotoDataUrl = fotoDataUrl;
-      this.fotoService.dataUrl.next('');
+      this.fotoDataUrl = `${this.fotoService.dataUrl.getValue()}`;
+      if (this.fotoDataUrl && this.fotoDataUrl != this.curriculoSelected?.fotoDataUrl)
+        this.gravar(false);
       this.curriculoForm.markAllAsTouched();
     });
   }
@@ -229,7 +229,7 @@ export class FormularioCurriculoComponent implements OnInit {
     return d instanceof Date && !isNaN(d.getTime());
   }
 
-  getCurriculoFromForm() : Curriculo | null  {
+  getCurriculoFromForm(): Curriculo | null {
     let curriculo: Curriculo | null = null;
     if (this.isFormValid()) {
       let experiencias: Experiencia[] = [];
@@ -255,7 +255,7 @@ export class FormularioCurriculoComponent implements OnInit {
     return curriculo;
   }
 
-  gravar() {
+  gravar(redirect: boolean = true) {
     this.progressBarService.show.next(true);
     if (this.isFormValid()) {
       const curriculo = this.getCurriculoFromForm()!;
@@ -273,7 +273,7 @@ export class FormularioCurriculoComponent implements OnInit {
         .updateCurriculosList(this.curriculosList)
         .then((_) => {
           this.progressBarService.show.next(false);
-          this._nav.navigateTo('painel');
+          redirect && this._nav.navigateTo('painel');
         })
         .catch((err) => {
           this.progressBarService.show.next(false);
@@ -367,12 +367,11 @@ export class FormularioCurriculoComponent implements OnInit {
     this.experiencias.removeAt(index);
   }
   gerarPDF() {
-    if(!this.disablePDF()) {
+    if (!this.disablePDF()) {
       this.pdfService.curriculo.next(this.getCurriculoFromForm());
       this._nav.navigateTo('pdf-preview/curriculuid');
     }
   }
-
   disablePDF() {
     return !this.uid || !this.isFormValid;
   }
@@ -380,6 +379,8 @@ export class FormularioCurriculoComponent implements OnInit {
     this._nav.navigateTo(`/upload-foto/${this.uid}`);
   }
   delPhoto() {
-    this.fotoDataUrl='';
+    this.fotoDataUrl = '';
+    this.fotoService.dataUrl.next('');
+    this.gravar(false);
   }
 }
