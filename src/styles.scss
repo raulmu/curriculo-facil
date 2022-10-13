@@ -66,6 +66,10 @@ ul {
   margin: 5px !important;
 }
 
+.margin-10 {
+  margin: 10px !important;
+}
+
 .margin-top-10 {
   margin-top: 10px;
 }
@@ -110,6 +114,15 @@ ul {
   left: 0;
 }
 
-// theme
+.footer {
+  margin-bottom: 10px;
+  text-align: center;
+}
 
+.align-items-center {
+  align-items: center;
+}
 
+.align-items-center .mat-h2 {
+  margin: 0;
+}

@@ -23,6 +23,13 @@ export class NavigateService {
     );
   }
 
+  navigateToSite(url: string) {
+    var link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.click();
+  }
+
   back() {
     this.history.pop();
     const url = this.history.length ? this.history.pop() : '/';

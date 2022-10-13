@@ -1,0 +1,26 @@
+<div class="container">
+  <div class="flex-row align-items-center margin-10">
+    <mat-icon class="margin-2">shopping_cart</mat-icon>
+    <h2 class="mat-h2">Confirmação do Pagamento</h2>
+  </div>
+  <div>
+    <span
+      >Para ser um assinante e apoiador do Docs Curriculos durante um ano, faça
+      o pagamento de apenas R$ 10,00</span
+    >
+  </div>
+  <div>
+    <ul>
+      <li>
+        <button
+          mat-raised-button
+          color="accent"
+          (click)="nav.navigateTo('indisponivel')"
+        >
+          Confirmar
+        </button>
+      </li>
+      <li><a (click)="nav.back()" routerLink="">Voltar</a></li>
+    </ul>
+  </div>
+</div>

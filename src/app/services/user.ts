@@ -6,4 +6,5 @@ export interface User {
   emailVerified: boolean;
   curriculosUID?: string | null;
   loginMode?: 'google-oauth' | 'email-password';
+  querAssinar?: boolean;
 }

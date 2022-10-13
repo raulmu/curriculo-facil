@@ -8,13 +8,13 @@ import { NavigateService } from 'src/app/services/navigate.service';
 })
 export class AdicionaisComponent implements OnInit {
 
-  constructor(private _nav: NavigateService) { }
+  constructor(public nav: NavigateService) { }
 
   ngOnInit(): void {
   }
 
   back() {
-    this._nav.back();
+    this.nav.back();
   }
 
 }

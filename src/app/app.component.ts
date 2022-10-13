@@ -14,6 +14,7 @@ import { ProgressBarService } from './services/progress-bar.service';
 })
 export class AppComponent {
   showProgressBar = false;
+  public urlFaleConosco = environment.urlFaleConosco;
   constructor(
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,

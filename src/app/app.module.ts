@@ -73,6 +73,8 @@ import { UploadFotoComponent } from './pages/upload-foto/upload-foto.component';
 import { LySliderModule } from '@alyle/ui/slider';
 import { PdfPreviewComponent } from './pages/pdf-preview/pdf-preview.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { PagamentoComponent } from './pages/pagamento/pagamento.component';
+import { IndisponivelComponent } from './pages/indisponivel/indisponivel.component';
 
 @NgModule({
   declarations: [
@@ -91,6 +93,8 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
     ConfirmDialogComponent,
     UploadFotoComponent,
     PdfPreviewComponent,
+    PagamentoComponent,
+    IndisponivelComponent,
   ],
   imports: [
     BrowserModule,

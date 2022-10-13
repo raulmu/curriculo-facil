@@ -1,23 +1,18 @@
 <mat-progress-bar mode="query" *ngIf="showProgressBar"></mat-progress-bar>
 <mat-toolbar>
-  <button
-    mat-icon-button
-    (click)="nav.navigateTo('/')"
-  >
+  <button mat-icon-button (click)="nav.navigateTo('/')">
     <mat-icon>article</mat-icon>
   </button>
   <span>Docs Currículos</span>
   <div class="full-width"></div>
-  <button
-    mat-icon-button
-    [matMenuTriggerFor]="menu"
-  >
+  <button mat-icon-button [matMenuTriggerFor]="menu">
     <mat-icon>menu</mat-icon>
   </button>
 </mat-toolbar>
 <div class="mat-body">
   <router-outlet></router-outlet>
 </div>
+<div class="footer mat-body"><a (click)="nav.navigateToSite(urlFaleConosco)" routerLink="">Fale com o Desenvolvedor</a></div>
 <mat-menu #menu="matMenu">
   <button mat-menu-item routerLink="/">
     <mat-icon>home</mat-icon>

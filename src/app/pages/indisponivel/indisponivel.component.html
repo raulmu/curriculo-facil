@@ -1,0 +1,22 @@
+<div class="container">
+  <div class="flex-row align-items-center margin-10">
+    <mat-icon class="margin-2">unpublished</mat-icon>
+    <h2 class="mat-h2">Serviço Indisponível</h2>
+  </div>
+  <div>
+    <span
+      >A assinatura anual do Docs Currículos está indisponível no momento. Quer
+      ser avisado quando a assinatura estiver disponível?</span
+    >
+  </div>
+  <div>
+    <ul>
+      <li>
+        <button mat-raised-button color="accent" (click)="queroSerNotificado()">
+          Sim!
+        </button>
+      </li>
+      <li><a (click)="nav.back()" routerLink="">Voltar</a></li>
+    </ul>
+  </div>
+</div>

@@ -130,20 +130,30 @@ export class PdfService implements OnInit {
         // FOTO
 
         if (curriculo.fotoDataUrl.length) {
-          const imageUint8: Uint8Array = Uint8Array.from(
-            atob(curriculo.fotoDataUrl.replace('data:image/jpeg;base64,', '')),
-            (c) => c.charCodeAt(0)
+          const isJpg = curriculo.fotoDataUrl.includes(
+            'data:image/jpeg;base64'
           );
-          const jpgImage = await this.pdfDoc.embedJpg(imageUint8.buffer);
-          const jpgDims = jpgImage.scale(0.4);
-          jpgImage &&
-            page.drawImage(jpgImage, {
-              x: x4 * 3 + left + (x4 - jpgDims.width) / 2,
-              y: lastXYI.y - jpgDims.height, // + (y10 - jpgDims.height) / 2,
-              width: jpgDims.width,
-              height: jpgDims.height,
-              opacity: 1,
-            });
+          const isPng = curriculo.fotoDataUrl.includes('data:image/png;base64');
+
+          if (isJpg || isPng) {
+            const base64 = curriculo.fotoDataUrl.replace('data:image/jpeg;base64,', '').replace('data:image/png;base64,', '');
+            const imageUint8: Uint8Array = Uint8Array.from(
+              atob(
+                base64
+              ),
+              (c) => c.charCodeAt(0)
+            );
+            const image = isJpg ? await this.pdfDoc.embedJpg(imageUint8.buffer) : await this.pdfDoc.embedPng(imageUint8.buffer);
+            const imgDims = image.scale(0.4);
+            image &&
+              page.drawImage(image, {
+                x: x4 * 3 + left + (x4 - imgDims.width) / 2,
+                y: lastXYI.y - imgDims.height, // + (y10 - jpgDims.height) / 2,
+                width: imgDims.width,
+                height: imgDims.height,
+                opacity: 1,
+              });
+          }
         }
         // GRUPO DADOS PESSOAIS
         const alturaH2 = 16;
