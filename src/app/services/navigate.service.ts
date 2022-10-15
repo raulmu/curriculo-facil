@@ -18,8 +18,12 @@ export class NavigateService {
 
   navigateTo(url: string, userId: string) {
     if (userId) this.analytics.setUserId(userId);
+    let urlStr = url;
+    if(urlStr.length > 1 && urlStr.includes('/')) {
+      urlStr = urlStr.split('/')[0]
+    }
     const amb = environment.production ? 'prod' : 'dev';
-    this.analytics.logEvent(`navigateTo(${url}) - ${amb}`, {
+    this.analytics.logEvent(`${amb}-${urlStr}`, {
       userId,
       url,
       data: new Intl.DateTimeFormat('en-US').format(new Date()),
@@ -40,7 +44,7 @@ export class NavigateService {
   navigateToSite(url: string, userId: string) {
     const amb = environment.production ? 'prod' : 'dev';
     if (userId) this.analytics.setUserId(userId!);
-    this.analytics.logEvent(`navigateToSite(${url}) - ${amb}`, {
+    this.analytics.logEvent(`${amb}-${url}`, {
       userId,
       url,
       data: new Intl.DateTimeFormat('en-US').format(new Date()),
