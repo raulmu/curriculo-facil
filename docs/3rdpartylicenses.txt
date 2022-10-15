@@ -104,6 +104,9 @@ MIT
 @firebase/analytics
 Apache-2.0
 
+@firebase/analytics-compat
+Apache-2.0
+
 @firebase/app
 Apache-2.0
 
@@ -215,6 +218,8 @@ firebase/app
 firebase/app-check
 
 firebase/auth
+
+firebase/compat/analytics
 
 firebase/compat/app
 
