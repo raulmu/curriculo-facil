@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
   OnInit,
   ViewChild,
   Inject,
@@ -16,6 +15,7 @@ import { DOCUMENT } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { NavigateService } from 'src/app/services/navigate.service';
 import { FotoService } from 'src/app/services/foto.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 const styles = () => {
   return {
@@ -37,6 +37,7 @@ const styles = () => {
 })
 export class UploadFotoComponent implements OnInit {
   uid: string | null;
+  userUid: string;
   window?: (Window & typeof globalThis) | null;
   classes = this.sRenderer.renderSheet(styles);
   croppedImage?: string;
@@ -58,9 +59,11 @@ export class UploadFotoComponent implements OnInit {
     @Inject(DOCUMENT) private _document: Document,
     private route: ActivatedRoute,
     public _nav: NavigateService,
-    private fotoService: FotoService
+    private fotoService: FotoService,
+    private authService: AuthService
   ) {
     this.uid = this.route.snapshot.paramMap.get('uid');
+    this.userUid = this.authService.userData ? this.authService.userData.uid : '';
   }
 
   onCropped(e: ImgCropperEvent) {
@@ -95,6 +98,6 @@ export class UploadFotoComponent implements OnInit {
   }
 
   gotoCurriculo() {
-    this._nav.navigateTo(`/curriculo/${this.uid}`);
+    this._nav.navigateTo(`/curriculo/${this.uid}`, this.userUid);
   }
 }

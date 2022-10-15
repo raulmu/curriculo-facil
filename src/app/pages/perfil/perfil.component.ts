@@ -32,7 +32,7 @@ export class PerfilComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((dialogResult) => {
       if (dialogResult) {
-        this._nav.navigateTo('/excluir-perfil');
+        this._nav.navigateTo('/excluir-perfil', this.authService.userData ? this.authService.userData.uid : '');
       }
     });
   }

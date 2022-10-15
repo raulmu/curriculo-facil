@@ -15,12 +15,12 @@
         <button
           mat-raised-button
           color="accent"
-          (click)="nav.navigateTo('indisponivel')"
+          (click)="nav.navigateTo('indisponivel', userUid)"
         >
           Confirmar
         </button>
       </li>
-      <li><a (click)="nav.back()" routerLink="">Voltar</a></li>
+      <li><a (click)="nav.back(userUid)" routerLink="">Voltar</a></li>
     </ul>
   </div>
 </div>

@@ -19,6 +19,7 @@ import { ProgressBarService } from 'src/app/services/progress-bar.service';
 export class PainelComponent implements OnInit, OnDestroy {
   curriculoList: CurriculoList | undefined;
   subs = new Subscription();
+  userUid: string;
   constructor(
     public authService: AuthService,
     public curriculosService: CurriculosService,
@@ -33,6 +34,7 @@ export class PainelComponent implements OnInit, OnDestroy {
         this.curriculoList = userCurriculos;
       })
     );
+    this.userUid = this.authService.userData ? this.authService.userData.uid : '';
   }
 
   get userCurriculos(): Curriculo[] {
@@ -40,8 +42,9 @@ export class PainelComponent implements OnInit, OnDestroy {
   }
 
   addCurriculo() {
-    if (this.userCurriculos.length) this.nav.navigateTo('adicionais');
-    else this.nav.navigateTo('curriculo');
+    const userUid = this.userUid;
+    if (this.userCurriculos.length) this.nav.navigateTo('adicionais', userUid);
+    else this.nav.navigateTo('curriculo', userUid);
   }
 
   ngOnInit(): void {}

@@ -22,6 +22,7 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
+import { AngularFireAnalyticsModule, CONFIG  } from '@angular/fire/compat/analytics';
 
 import { LyImageCropperModule } from '@alyle/ui/image-cropper';
 import {
@@ -125,6 +126,7 @@ import { IndisponivelComponent } from './pages/indisponivel/indisponivel.compone
     LySliderModule,
     LyCommonModule,
     PdfViewerModule,
+    AngularFireAnalyticsModule
   ],
   providers: [
     AuthService,
@@ -137,6 +139,11 @@ import { IndisponivelComponent } from './pages/indisponivel/indisponivel.compone
     // Theme that will be applied to this module
     { provide: LY_THEME_NAME, useValue: 'minima-light' },
     { provide: LY_THEME, useClass: MinimaLight, multi: true },
+    { provide: CONFIG, useValue: {
+      send_page_view: true,
+      allow_ad_personalization_signals: false,
+      anonymize_ip: false
+    } }
   ],
   bootstrap: [AppComponent],
 })

@@ -1,4 +1,3 @@
-import { NodeWithI18n } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { AssetsService } from 'src/app/services/assets.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -10,7 +9,10 @@ import { NavigateService } from 'src/app/services/navigate.service';
   styleUrls: ['./inicio.component.scss'],
 })
 export class InicioComponent implements OnInit {
-  constructor(public authService: AuthService, public nav: NavigateService, public assets: AssetsService) {}
+  userUid: string;
+  constructor(public authService: AuthService, public nav: NavigateService, public assets: AssetsService) {
+    this.userUid = authService.userData ? authService.userData.uid : '';
+  }
 
   ngOnInit(): void {}
 

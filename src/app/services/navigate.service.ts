@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AngularFireAnalytics } from '@angular/fire/compat/analytics';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -8,9 +10,21 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class NavigateService {
   private history: string[] = [];
 
-  constructor(private router: Router, private _snackBar: MatSnackBar) {}
+  constructor(
+    private router: Router,
+    private _snackBar: MatSnackBar,
+    private analytics: AngularFireAnalytics
+  ) {}
 
-  navigateTo(url: string) {
+  navigateTo(url: string, userId: string) {
+    if (userId) this.analytics.setUserId(userId);
+    const amb = environment.production ? 'prod' : 'dev';
+    this.analytics.logEvent(`navigateTo(${url}) - ${amb}`, {
+      userId,
+      url,
+      data: new Intl.DateTimeFormat('en-US').format(new Date()),
+      prod: environment.production,
+    });
     this.history.push(url);
     this.router.navigateByUrl(url).then(
       (_) => {
@@ -23,16 +37,24 @@ export class NavigateService {
     );
   }
 
-  navigateToSite(url: string) {
+  navigateToSite(url: string, userId: string) {
+    const amb = environment.production ? 'prod' : 'dev';
+    if (userId) this.analytics.setUserId(userId!);
+    this.analytics.logEvent(`navigateToSite(${url}) - ${amb}`, {
+      userId,
+      url,
+      data: new Intl.DateTimeFormat('en-US').format(new Date()),
+      prod: environment.production,
+    });
     var link = document.createElement('a');
     link.href = url;
     link.target = '_blank';
     link.click();
   }
 
-  back() {
+  back(userId: string) {
     this.history.pop();
     const url = this.history.length ? this.history.pop() : '/';
-    this.navigateTo(url!);
+    this.navigateTo(url!, userId);
   }
 }

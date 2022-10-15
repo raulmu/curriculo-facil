@@ -10,6 +10,7 @@ import {
 } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { ActivatedRoute } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 import { CepService } from 'src/app/services/cep.service';
 import { Curriculo } from 'src/app/services/curriculo';
 import { CurriculoList } from 'src/app/services/curriculoList';
@@ -30,6 +31,7 @@ export class FormularioCurriculoComponent implements OnInit {
   curriculosList: CurriculoList | undefined = undefined;
   curriculoSelected: Curriculo | undefined = undefined;
   uid: string | null = null;
+  userUid: string;
   public fotoDataUrl: string = '';
   estadoCivisList = [
     'Solteiro',
@@ -143,9 +145,11 @@ export class FormularioCurriculoComponent implements OnInit {
     private progressBarService: ProgressBarService,
     private dateAdapter: DateAdapter<Date>,
     private fotoService: FotoService,
-    private pdfService: PdfService
+    private pdfService: PdfService,
+    private authService: AuthService
   ) {
     this.uid = this.route.snapshot.paramMap.get('id');
+    this.userUid = authService.userData ? authService.userData.uid : '';
     this.curriculosService.curriculoList?.subscribe((userCurriculos) => {
       this.curriculosList = userCurriculos;
       this.curriculoSelected = this.curriculosList?.curriculos.filter(
@@ -276,7 +280,11 @@ export class FormularioCurriculoComponent implements OnInit {
         .then((_) => {
           this.fotoService.isPersisted.next(true);
           this.progressBarService.show.next(false);
-          redirect && this._nav.navigateTo('painel');
+          redirect &&
+            this._nav.navigateTo(
+              'painel',
+              this.authService.userData ? this.authService.userData.uid : ''
+            );
         })
         .catch((err) => {
           this.progressBarService.show.next(false);
@@ -372,14 +380,20 @@ export class FormularioCurriculoComponent implements OnInit {
   gerarPDF() {
     if (!this.disablePDF()) {
       this.pdfService.curriculo.next(this.getCurriculoFromForm());
-      this._nav.navigateTo('pdf-preview/curriculuid');
+      this._nav.navigateTo(
+        'pdf-preview/curriculuid',
+        this.authService.userData ? this.authService.userData.uid : ''
+      );
     }
   }
   disablePDF() {
     return !this.uid || !this.isFormValid;
   }
   addPhoto() {
-    this._nav.navigateTo(`/upload-foto/${this.uid}`);
+    this._nav.navigateTo(
+      `/upload-foto/${this.uid}`,
+      this.authService.userData ? this.authService.userData.uid : ''
+    );
   }
   delPhoto() {
     this.fotoDataUrl = '';

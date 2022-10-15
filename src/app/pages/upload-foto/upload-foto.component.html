@@ -108,7 +108,7 @@
     <button mat-fab color="accent" (click)="enviar()" [disabled]="!cropper.isCropped">
       <mat-icon>file_upload</mat-icon>
     </button>
-    <button mat-fab color="warn" (click)="_nav.back()">
+    <button mat-fab color="warn" (click)="_nav.back(userUid)">
       <mat-icon>cancel</mat-icon>
     </button>
   </div>

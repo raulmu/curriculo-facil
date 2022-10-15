@@ -10,15 +10,18 @@ import { NavigateService } from 'src/app/services/navigate.service';
 export class ExcluirPerfilComponent implements OnInit {
   userEmail: string = '';
   userPassword: string = '';
+  userUid: string;
   constructor(
     public authService: AuthService,
     private _nav: NavigateService
-  ) {}
+  ) {
+    this.userUid = authService.userData ? authService.userData.uid : '';
+  }
   ngOnInit(): void {}
   googleLogin() {
     this.authService.googleLogin().then((_) => {
       this.authService.deleteUser().then((_) => {
-        this._nav.navigateTo('/');
+        this._nav.navigateTo('/', this.userUid);
       });
     });
   }
@@ -26,7 +29,7 @@ export class ExcluirPerfilComponent implements OnInit {
     if(this.userEmail&&this.userPassword) {
       this.authService.signIn(this.userEmail, this.userPassword).then((_) => {
         this.authService.deleteUser().then((_) => {
-          this._nav.navigateTo('/');
+          this._nav.navigateTo('/', this.userUid);
         });
       });
     }

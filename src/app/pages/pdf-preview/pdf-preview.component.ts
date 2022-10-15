@@ -5,6 +5,8 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
+import { timeStamp } from 'console';
+import { AuthService } from 'src/app/services/auth.service';
 import { NavigateService } from 'src/app/services/navigate.service';
 import { PdfService } from 'src/app/services/pdf.service';
 
@@ -14,7 +16,7 @@ import { PdfService } from 'src/app/services/pdf.service';
 })
 export class PdfPreviewComponent implements OnInit, AfterViewInit {
   pdfSrc: string | undefined;
-  constructor(private pdfService: PdfService, private _nav: NavigateService) {}
+  constructor(private pdfService: PdfService, private _nav: NavigateService, private authService: AuthService) {}
   ngOnInit() {}
   async ngAfterViewInit() {
     // element = this.content.nativeElement;
@@ -29,6 +31,6 @@ export class PdfPreviewComponent implements OnInit, AfterViewInit {
   }
 
   back() {
-    this._nav.back();
+    this._nav.back(this.authService.userData ? this.authService.userData.uid: '');
   }
 }

@@ -15,6 +15,7 @@ import { ProgressBarService } from './services/progress-bar.service';
 export class AppComponent {
   showProgressBar = false;
   public urlFaleConosco = environment.urlFaleConosco;
+  userUid: string;
   constructor(
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer,
@@ -23,6 +24,7 @@ export class AppComponent {
     private assets: AssetsService,
     private progressBarService: ProgressBarService
   ) {
+    this.userUid = authService.userData ? authService.userData.uid : '';
     let googleSvg = this.assets.getUrl('/assets/svg/google.svg');
     this.matIconRegistry.addSvgIcon('google_logo', this.domSanitizer.bypassSecurityTrustResourceUrl(googleSvg));
     this.progressBarService.show.subscribe((value) => {
@@ -32,7 +34,7 @@ export class AppComponent {
 
   logout(){
     this.authService.signOut().then(() => {
-      this.nav.navigateTo('/');
+      this.nav.navigateTo('/', this.userUid);
     });
   }
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { User } from 'firebase/auth';
 import { AuthService } from 'src/app/services/auth.service';
 import { NavigateService } from 'src/app/services/navigate.service';
 
@@ -9,7 +10,11 @@ import { NavigateService } from 'src/app/services/navigate.service';
 })
 export class IndisponivelComponent implements OnInit {
 
-  constructor(public nav: NavigateService, private authService: AuthService) { }
+  userUid: string;
+
+  constructor(public nav: NavigateService, private authService: AuthService) { 
+    this.userUid = authService.userData ? authService.userData.uid : '';
+  }
 
   ngOnInit(): void {
   }
@@ -19,7 +24,7 @@ export class IndisponivelComponent implements OnInit {
     if(user){
       user['querAssinar'] = true;
       this.authService.setUserData(user).then((_) => {
-        this.nav.navigateTo('/')
+        this.nav.navigateTo('/', user.uid)
       });
     } 
   }

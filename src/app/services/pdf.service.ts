@@ -3,7 +3,6 @@ import { BehaviorSubject, lastValueFrom, map } from 'rxjs';
 import { Curriculo } from './curriculo';
 import * as fontkit from '@btielen/pdf-lib-fontkit';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
 import {
   degrees,
   grayscale,

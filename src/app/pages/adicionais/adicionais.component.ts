@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/services/auth.service';
 import { NavigateService } from 'src/app/services/navigate.service';
 
 @Component({
@@ -8,13 +9,17 @@ import { NavigateService } from 'src/app/services/navigate.service';
 })
 export class AdicionaisComponent implements OnInit {
 
-  constructor(public nav: NavigateService) { }
+  userUid: string;
+
+  constructor(public nav: NavigateService, private authService: AuthService) {
+    this.userUid = authService.userData ? authService.userData.uid : '';
+   }
 
   ngOnInit(): void {
   }
 
   back() {
-    this.nav.back();
+    this.nav.back(this.userUid);
   }
 
 }

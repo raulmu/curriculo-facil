@@ -42,7 +42,7 @@ export class AuthService {
       if (user && user.uid) {
         this.userUID = user.uid;
         !this.didLoggedIn.value && this.didLoggedIn.next(true);
-        this._nav.navigateTo('/');
+        this._nav.navigateTo('/', this.userUID);
       } else {
         this.userData = null;
         this.user.next(this.userData);
@@ -120,7 +120,7 @@ export class AuthService {
           'Verificação de email enviada, verifique',
           'fechar'
         );
-        this._nav.navigateTo('/verificar-email');
+        this._nav.navigateTo('/verificar-email', this.userUID);
       });
   }
 
@@ -190,7 +190,7 @@ export class AuthService {
           );
         })
         .catch((err) => {
-          this._nav.navigateTo('/excluir-perfil');
+          this._nav.navigateTo('/excluir-perfil', this.userUID);
         });
     }
     return Promise.reject('No userData to delete');
@@ -253,7 +253,7 @@ export class AuthService {
             this.user.next(mergedUser);
             this.userData = mergedUser;
             this.didLoggedIn.next(true);
-            this._nav.navigateTo('/');
+            this._nav.navigateTo('/', this.userUID);
           })
           .unsubscribe();
       })

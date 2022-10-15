@@ -8,14 +8,14 @@
     <div class="margin-top-10">
       <span>
         Navegue para o:
-        <a (click)="nav.navigateTo('painel')" routerLink="">Seu Painel</a></span
+        <a (click)="nav.navigateTo('painel', userUid)" routerLink="">Seu Painel</a></span
       >
     </div>
   </div>
   <ng-template #loggedOut>
     <div class="redirectToLogin" *ngIf="!(authService.user | async)">
       <span
-        >Já possui um cadastro? <a routerLink="/login">Faça o Login</a></span
+        >Já possui um cadastro? <a (click)="nav.navigateTo('login', userUid)" routerLink="">Faça o Login</a></span
       >
     </div>
     <div class="margin-top-10">
