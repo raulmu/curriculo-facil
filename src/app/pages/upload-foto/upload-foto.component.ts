@@ -82,7 +82,7 @@ export class UploadFotoComponent implements OnInit {
 
   enviar() {
     if (this.croppedImage)
-      this.fotoService.dataUrl.next(this.croppedImage ? this.croppedImage : '');
+      this.fotoService.setDataUrl(this.croppedImage ? this.croppedImage : '');
     this.gotoCurriculo();
   }
 

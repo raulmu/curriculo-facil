@@ -5,6 +5,15 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class FotoService {
-  public dataUrl:BehaviorSubject<string> =  new BehaviorSubject<string>('');
+  public isPersisted: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+  private dataUrl:BehaviorSubject<string> =  new BehaviorSubject<string>('');
   constructor() {}
+  public setDataUrl(dataUrl: string) {
+    this.dataUrl.next(dataUrl);
+    this.isPersisted.next(false);
+  }
+  public getDataUrl(): BehaviorSubject<string> {
+    return this.dataUrl;
+  }
+
 }

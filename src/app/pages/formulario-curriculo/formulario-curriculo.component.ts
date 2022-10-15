@@ -152,9 +152,11 @@ export class FormularioCurriculoComponent implements OnInit {
         (el: any) => (el.uid = this.uid)
       )[0];
       if (this.curriculoSelected) this.preencheValoresIniciais();
-      this.fotoDataUrl = `${this.fotoService.dataUrl.getValue()}`;
-      if (this.fotoDataUrl && this.fotoDataUrl != this.curriculoSelected?.fotoDataUrl)
+
+      if (!this.fotoService.isPersisted.getValue()) {
+        this.fotoDataUrl = `${this.fotoService.getDataUrl().getValue()}`;
         this.gravar(false);
+      }
       this.curriculoForm.markAllAsTouched();
     });
   }
@@ -272,6 +274,7 @@ export class FormularioCurriculoComponent implements OnInit {
       this.curriculosService
         .updateCurriculosList(this.curriculosList)
         .then((_) => {
+          this.fotoService.isPersisted.next(true);
           this.progressBarService.show.next(false);
           redirect && this._nav.navigateTo('painel');
         })
@@ -380,7 +383,7 @@ export class FormularioCurriculoComponent implements OnInit {
   }
   delPhoto() {
     this.fotoDataUrl = '';
-    this.fotoService.dataUrl.next('');
+    this.fotoService.setDataUrl('');
     this.gravar(false);
   }
 }
