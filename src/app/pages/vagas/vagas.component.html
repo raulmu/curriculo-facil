@@ -1,0 +1,43 @@
+<div class="container">
+  <div class="flex-row align-items-center margin-10">
+    <mat-icon class="margin-2">work</mat-icon>
+    <h2 class="mat-h2">Vagas Cadastradas: {{ vagas.length }}</h2>
+  </div>
+  <ul>
+    <li *ngFor="let vaga of vagas; let i = index">
+      <div class="vaga">
+        <ul>
+          <li *ngIf="vaga.titulo"><h3 class="mat-h3 weight-500">{{ i + 1 }} - {{ vaga.titulo }}</h3></li>
+          <li *ngIf="vaga.cargo"><span class="mat-body-strong">Cargo:</span> {{ vaga.cargo }}</li>
+          <li *ngIf="vaga.cidade && vaga.estado"><span class="mat-body-strong">Cidade:</span> {{ vaga.cidade }}-{{vaga.estado}}</li>
+          <li *ngIf="vaga.descricao"><span class="mat-body-strong">Descrição:</span> {{ vaga.descricao }}</li>
+          <li *ngIf="vaga.email"><span class="mat-body-strong">Email:</span> {{ vaga.email }}</li>
+          <li *ngIf="vaga.zap"><span class="mat-body-strong">Whatsapp:</span> {{ vaga.zap }}</li>
+          <li *ngIf="vaga.telefone"><span class="mat-body-strong">Telefone:</span> {{ vaga.telefone }}</li>
+          <li *ngIf="vaga.link"><span class="mat-body-strong">Link:</span> {{ vaga.link }}</li>
+          <li *ngIf="vaga.empresa"><span class="mat-body-strong">Empresa:</span> {{ vaga.empresa }}</li>
+        </ul>
+      </div>
+    </li>
+  </ul>
+  <div>
+    <ul>
+      <li><a (click)="nav.back(userUid)" routerLink="">Voltar</a></li>
+    </ul>
+  </div>
+</div>
+
+<!--
+uid: string;
+email?: string;
+telefone?: string;
+zap?: string;
+cidade: string;
+estado: string;
+cargo: string;
+descricao: string;
+data_publicacao: string;
+titulo: string;
+link?: string;
+empresa?: string;
+-->

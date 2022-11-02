@@ -16,6 +16,7 @@ import { PdfPreviewComponent } from './pages/pdf-preview/pdf-preview.component';
 import { PerfilComponent } from './pages/perfil/perfil.component';
 import { RegistroComponent } from './pages/registro/registro.component';
 import { UploadFotoComponent } from './pages/upload-foto/upload-foto.component';
+import { VagasComponent } from './pages/vagas/vagas.component';
 import { VerificarEmailComponent } from './pages/verificar-email/verificar-email.component';
 
 const routes: Routes = [
@@ -83,6 +84,10 @@ const routes: Routes = [
     component: IndisponivelComponent,
     canActivate: [AuthGuard],
   },
+  {
+    path: 'vagas',
+    component: VagasComponent
+  }
 ];
 
 @NgModule({

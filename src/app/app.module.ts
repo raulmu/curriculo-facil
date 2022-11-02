@@ -76,6 +76,7 @@ import { PdfPreviewComponent } from './pages/pdf-preview/pdf-preview.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { PagamentoComponent } from './pages/pagamento/pagamento.component';
 import { IndisponivelComponent } from './pages/indisponivel/indisponivel.component';
+import { VagasComponent } from './pages/vagas/vagas.component';
 
 @NgModule({
   declarations: [
@@ -96,6 +97,7 @@ import { IndisponivelComponent } from './pages/indisponivel/indisponivel.compone
     PdfPreviewComponent,
     PagamentoComponent,
     IndisponivelComponent,
+    VagasComponent,
   ],
   imports: [
     BrowserModule,
