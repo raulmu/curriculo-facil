@@ -41,6 +41,11 @@ body {
   flex-direction: row;
 }
 
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
 .align-items-center {
   align-items: center;
 }
@@ -125,4 +130,13 @@ ul {
 
 .align-items-center .mat-h2 {
   margin: 0;
+}
+
+#footer-logo {
+  height: 50px;
+  width: 50px;
+  background-image: url('/assets/img/logo-80.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin: 5px auto;
 }

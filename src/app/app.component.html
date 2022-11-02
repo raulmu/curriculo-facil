@@ -12,7 +12,12 @@
 <div class="mat-body">
   <router-outlet></router-outlet>
 </div>
-<div class="footer mat-body"><a (click)="nav.navigateToSite(urlFaleConosco, userUid)" routerLink="">Fale com o Desenvolvedor</a></div>
+<div class="footer mat-body">
+  <div class="flex-col">
+    <div id="footer-logo"></div>
+    <a (click)="nav.navigateToSite(urlFaleConosco, userUid)" routerLink="">Fale com o Desenvolvedor</a>
+  </div>
+</div>
 <mat-menu #menu="matMenu">
   <button mat-menu-item routerLink="/">
     <mat-icon>home</mat-icon>
