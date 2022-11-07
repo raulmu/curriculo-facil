@@ -126,7 +126,6 @@ export class FormularioCurriculoComponent implements OnInit {
       FormularioCurriculoComponent.checkCategoryInput(this.escolaridadeList),
     ]),
     descricao_escolaridade: new FormControl('', [
-      Validators.required,
       Validators.maxLength(70),
     ]),
     cursos: new FormArray([]),
@@ -359,7 +358,7 @@ export class FormularioCurriculoComponent implements OnInit {
           ]),
           atividades_exercidas: new FormControl(
             experiencia ? experiencia.atividades_exercidas : '',
-            [Validators.required, Validators.maxLength(150)]
+            [Validators.maxLength(150)]
           ),
         })
       );

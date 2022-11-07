@@ -135,14 +135,15 @@ export class PdfService implements OnInit {
           const isPng = curriculo.fotoDataUrl.includes('data:image/png;base64');
 
           if (isJpg || isPng) {
-            const base64 = curriculo.fotoDataUrl.replace('data:image/jpeg;base64,', '').replace('data:image/png;base64,', '');
-            const imageUint8: Uint8Array = Uint8Array.from(
-              atob(
-                base64
-              ),
-              (c) => c.charCodeAt(0)
+            const base64 = curriculo.fotoDataUrl
+              .replace('data:image/jpeg;base64,', '')
+              .replace('data:image/png;base64,', '');
+            const imageUint8: Uint8Array = Uint8Array.from(atob(base64), (c) =>
+              c.charCodeAt(0)
             );
-            const image = isJpg ? await this.pdfDoc.embedJpg(imageUint8.buffer) : await this.pdfDoc.embedPng(imageUint8.buffer);
+            const image = isJpg
+              ? await this.pdfDoc.embedJpg(imageUint8.buffer)
+              : await this.pdfDoc.embedPng(imageUint8.buffer);
             const imgDims = image.scale(0.4);
             image &&
               page.drawImage(image, {
@@ -392,7 +393,11 @@ export class PdfService implements OnInit {
           fontRegular
         );
 
-        let escolaridade = `${curriculo.escolaridade!} - ${curriculo.descricao_escolaridade!}`;
+        let escolaridade = `${curriculo.escolaridade!}${
+          curriculo.descricao_escolaridade!
+            ? ' - ' + curriculo.descricao_escolaridade!
+            : ''
+        }`;
         linhas = this.quebrarLinhas(
           escolaridade,
           maxWidth,
@@ -518,16 +523,18 @@ export class PdfService implements OnInit {
             });
             retorno = retorno.concat(linhas);
 
-            linhas = this.quebrarLinhas(
-              `- Atividades Exercidas: ${exp.atividades_exercidas}`,
-              maxWidth,
-              margin5,
-              fontRegular,
-              bodyFontSize
-            ).map((linha) => {
-              return { line: `${linha}` };
-            });
-            retorno = retorno.concat(linhas);
+            if (exp.atividades_exercidas) {
+              linhas = this.quebrarLinhas(
+                `- Atividades Exercidas: ${exp.atividades_exercidas}`,
+                maxWidth,
+                margin5,
+                fontRegular,
+                bodyFontSize
+              ).map((linha) => {
+                return { line: `${linha}` };
+              });
+              retorno = retorno.concat(linhas);
+            }
             retorno.push({ line: '' });
             return retorno;
           });
